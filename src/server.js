@@ -1,5 +1,6 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
+import dotenv from 'dotenv';
 import 'babel/polyfill';
 import _ from 'lodash';
 import fs from 'fs';
@@ -7,6 +8,8 @@ import path from 'path';
 import express from 'express';
 import ReactDOM from 'react-dom/server';
 import router from './router';
+
+dotenv.load();
 
 const server = global.server = express();
 
