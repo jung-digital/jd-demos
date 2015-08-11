@@ -5,6 +5,7 @@ import { Router } from 'express';
 import jade from 'jade';
 import fm from 'front-matter';
 import fs from '../utils/fs';
+import path from 'path';
 
 // A folder with Jade/Markdown/HTML content pages
 const CONTENT_DIR = join(__dirname, './content');
@@ -18,6 +19,16 @@ const parseJade = (path, jadeContent) => {
 };
 
 const router = new Router();
+
+router.get('/menu', async (req, res, next) => {
+  try {
+    var files = await fs.listFiles(path.join(__dirname, "/src/components/demos"));
+    res.status(200).send(JSON.stringify(files));
+  }
+  catch (err) {
+    next(err);
+  }
+});
 
 router.get('/', async (req, res, next) => {
   try {

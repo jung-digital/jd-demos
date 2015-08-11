@@ -26,20 +26,20 @@ server.use('/api/content', require('./api/content'));
 // -----------------------------------------------------------------------------
 
 // The top-level React component + HTML template for it
-const templateFile = path.join(__dirname, 'templates/index.html');
-const template = _.template(fs.readFileSync(templateFile, 'utf8'));
+const templateFile = path.join(__dirname, 'templates/index.html'),
+      template = _.template(fs.readFileSync(templateFile, 'utf8'));
 
 server.get('*', async (req, res, next) => {
   try {
     let statusCode = 200;
-    const data = { title: '', description: '', css: '', body: '' };
-    const css = [];
-    const context = {
-      onInsertCss: value => css.push(value),
-      onSetTitle: value => data.title = value,
-      onSetMeta: (key, value) => data[key] = value,
-      onPageNotFound: () => statusCode = 404
-    };
+    const data = { title: '', description: '', css: '', body: '' },
+          css = [],
+          context = {
+            onInsertCss: value => css.push(value),
+            onSetTitle: value => data.title = value,
+            onSetMeta: (key, value) => data[key] = value,
+            onPageNotFound: () => statusCode = 404
+          };
 
     await router.dispatch({ path: req.path, context }, (state, component) => {
       data.body = ReactDOM.renderToString(component);
