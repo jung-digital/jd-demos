@@ -3,8 +3,26 @@
 import React, { PropTypes } from 'react';
 import styles from './MenuPage.css';
 import withStyles from '../../decorators/withStyles';
+import demos from '../../components/demos/Demos.js';
+import Dispatcher from '../../core/Dispatcher';
+import ActionTypes from '../../constants/ActionTypes';
 
-var demos = [];
+class DemoLink {
+  demo_onClickHandler(event) {
+    Dispatcher.dispatch({
+      type: ActionTypes.CHANGE_LOCATION,
+      path: '/demo/' + this.props.demo.key
+    });
+  };
+
+  render() {
+    return (<div className="DemoLink" id={this.props.demo.name}>
+             <a href="#" onClick={this.demo_onClickHandler.bind(this)}>
+               {this.props.demo.name} by {this.props.demo.author}
+             </a>
+           </div>);
+  }
+};
 
 @withStyles(styles)
 class MenuPage {
@@ -19,16 +37,22 @@ class MenuPage {
   };
 
   render() {
-    var self = this;
     this.context.onSetTitle(this.props.title);
+
+    var demosHTML = [];
+
+    for (var key in demos) demosHTML.push(
+        <DemoLink demo={demos[key]} key={key}/>
+      );
+
     return (
       <div className="MenuPage">
         <div className="MenuPage-container">
-          {{demos}}
+          {demosHTML}
         </div>
       </div>
     );
   }
-}
+};
 
 export default MenuPage;

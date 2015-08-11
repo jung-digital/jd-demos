@@ -14,11 +14,6 @@ export default {
         window.history.pushState({}, document.title, path);
       }
     }
-
-    Dispatcher.dispatch({
-      type: ActionTypes.CHANGE_LOCATION,
-      path
-    });
   }
 
 };

@@ -36,6 +36,7 @@ function run() {
   });
 
   Dispatcher.register(action => {
+    console.log('DISPATCHER', action);
     if (action.type === ActionTypes.CHANGE_LOCATION) {
       router.dispatch({ path: action.path, context }, (state, component) => {
         ReactDOM.render(component, container);

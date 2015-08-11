@@ -1,5 +1,8 @@
 import DigitalLines from './DigitalLines/index.js';
 
-const demos = {digitalLines: DigitalLines};
+const all = [DigitalLines],
+      demosByKey = {};
 
-export default demos;
+all.forEach(demo => demosByKey[demo.key] = demo);
+
+export default demosByKey;
