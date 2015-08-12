@@ -3,11 +3,11 @@
 @import '../variables.css';
 
 :root {
-  --brand-color: #61dafb;
+  --brand-color: #5aa02c;
 }
 
 .Header {
-  background: #373277;
+  background: #5aa02c;
   color: #fff;
 }
 
