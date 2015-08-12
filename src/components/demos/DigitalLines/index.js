@@ -2,7 +2,30 @@
 
 import React, { PropTypes } from 'react';
 
+class Line {
+  constructor() {
+    try {
+    this.path = new paper.Path();
+    this.path.fillColor = undefined;
+    this.path.strokeColor = 'green';
+    this.path.strokeWidth = 2;
 
+    // Left side
+    var cur = new paper.Point(0, Math.random() * 500);
+    this.path.moveTo(cur);
+
+    while (cur.x < 800)
+    {
+      cur = cur.add(new paper.Point(Math.random() * 50 + 25, Math.random() * 50 - 25));
+      this.path.lineTo(cur);
+    }
+
+    this.path.smooth();
+  }catch (e) {
+    console.log(e);
+  };
+  }
+};
 
 class DigitalLines {
 
@@ -15,24 +38,20 @@ class DigitalLines {
 
   componentDidMount() {
     // Get a reference to the canvas object
-    var canvas = document.getElementById('digitalLinesCanvas');
+    var canvas = document.getElementById('digitalLinesCanvas'),
+        lines = [];
 
     // Create an empty project and a view for the canvas:
     paper.setup(canvas);
 
-    // Create a Paper.js Path to draw a line into it:
-    var path = new paper.Path();
+    for (var i = 0; i < 10; i++)
+      lines.push(new Line());
 
-    // Give the stroke a color
-    path.strokeColor = 'black';
-    var start = new paper.Point(100, 100);
+    
 
-    // Move to start and draw a line from there
-    path.moveTo(start);
+    path.view.onFrame = function (event) {
 
-    // Note that the plus operator on Point objects does not work
-    // in JavaScript. Instead, we need to call the add() function:
-    path.lineTo(start.add([ 200, -50 ]));
+    };
 
     // Draw the view now:
     paper.view.draw();
