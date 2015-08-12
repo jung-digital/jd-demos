@@ -16,6 +16,7 @@ class Navigation {
   render() {
     return (
       <div className={classNames(this.props.className, 'Navigation')} role="navigation">
+        <a className="Navigation-link" href="/">Demo List</a>
         <a className="Navigation-link" href="http://www.jungdigital.com">Home</a>
       </div>
     );

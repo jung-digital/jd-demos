@@ -1,5 +1,10 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
+// Import Paper.js Once
+import paper from '../node_modules/paper/dist/paper-full.js';
+window.paper = paper;
+
+// Import everything else that uses ES6
 import 'babel/polyfill';
 import ReactDOM from 'react-dom';
 import FastClick from 'fastclick';
