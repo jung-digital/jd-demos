@@ -16,6 +16,8 @@ class Comet {
   }
 
   onFrame(event) {
+    if (event.delta > 0.2) return;
+
     var self = this,
         G = 1,              // Gravity constant
         m1 = this.mass,     // Mass of comet
