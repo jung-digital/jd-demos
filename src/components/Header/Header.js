@@ -19,7 +19,7 @@ class Header {
           <Navigation className="Header-nav" />
           <div className="Header-banner">
             <h1 className="Header-bannerTitle">JavaScript Demos</h1>
-            <p className="Header-bannerDesc">Built with React.js, Gulp, and Canvas</p>
+            <p className="Header-bannerDesc">Math, graphics, web components, and all things fun.</p>
           </div>
         </div>
       </div>

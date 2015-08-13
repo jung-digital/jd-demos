@@ -5,9 +5,11 @@ import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 
-const WIDTH = 800;
-const HEIGHT = 600;
-const MAX_FORCE = 500;
+const WIDTH = 800,
+      HEIGHT = 600,
+      MAX_FORCE = 500,
+      TAIL_LENGTH = 40,
+      NUM_COMETS = 17;
 
 /**
  * A comet that moves toward this.m, which is designed to be the mouse.
@@ -23,27 +25,19 @@ class Comet {
   }
 
   wrap() {
-    var reset = false;
-
-    if (this.pos.x < 0) {reset = true; this.pos.x = WIDTH};
-    if (this.pos.x > WIDTH) {reset = true; this.pos.x = 0};
-    if (this.pos.y < 0) {reset = true; this.pos.y = HEIGHT};
-    if (this.pos.y > HEIGHT) {reset = true; this.pos.y = 0};
-
-    if (reset)
-    {
-      this.hist = [];
-      this.paths.forEach(path => path.removeSegments());
-    }
+    if (this.pos.x < 0) {this.justWrapped = true; this.pos.x = WIDTH}       // LEFT EDGE
+    else if (this.pos.x > WIDTH) {this.justWrapped = true; this.pos.x = 0}  // RIGHT EDGE
+    if (this.pos.y < 0) {this.justWrapped = true; this.pos.y = HEIGHT}      // TOP EDGE
+    else if (this.pos.y > HEIGHT) {this.justWrapped = true; this.pos.y = 0} // BOTTOM EDGE
   }
 
   onFrame(event) {
-    var G = 1,              // Gravity constant
+    var self = this,
+        G = 1,              // Gravity constant
         m1 = this.mass,     // Mass of comet
         m2 = this.destMass; // Mass of mouse (planet)
 
-    // Accelerate toward the destination point.
-
+    // Accelerate toward the destination point (e.g. the mouse)
     // r is vector from comet to the planet
     var r = this.dest.subtract(this.pos),
         dist = r.length,
@@ -59,71 +53,78 @@ class Comet {
 
       var next = this.pos.add(this.vel.multiply(event.delta));
 
-      //this.hist.push(this.pos);
-
       this.pos = next;
       this.wrap();
+      
+      // shift() dead end of tail
+      if (this.hist.length >= this.resolution)
+      {
+        // Take item from tail and make available to cache
+        this.nextPath = this.paths.shift();
+        this.hist.shift(); // Remove the first segment, to make a trail
+      }
 
       this.hist.push(next);
 
-      if (this.hist.length >= this.resolution)
-        this.hist.shift(); // Remove the first segment, to make a trail
+      //Add new tail head
+      if (!this.justWrapped && this.hist.length > 1)
+      {
+        this.nextPath = this.nextPath || new paper.Path();
 
-      // The base *glow* of the entire comet
-      //   Min: 0.2
+        this.nextPath.removeSegments();
+        this.nextPath.add(this.hist[this.hist.length-1]);
+        this.nextPath.add(this.hist[this.hist.length-2]);
+
+        this.paths.push(this.nextPath);
+        this.nextPath = undefined;
+      }
+      else this.justWrapped = false;
+
+      // The base *glow* off of the entire comet
+      //   Min: 0.4
       //   Max: 1.0
       // Glow is inversely proportional to distance.
-      var alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
+      const alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
+      
+      this.circle.fillColor.alpha = alphaBase;
 
-      // Now we create the actual paths that taper and fade
-      for (var i = this.hist.length-1; i > 1; i--)
-      {
-        var p = this.paths[i];
+      // Readjust each segments width and alpha based on index distance from head
+      this.paths.forEach((path, ix) => {
+        const ratio = (ix+1) / self.resolution,
+              alpha = ratio * alphaBase;
 
-        p.removeSegments();
-
-        var alpha = ((i+1) / this.resolution) * alphaBase;
-        p.strokeColor = new paper.Color(this.color.red, this.color.green, this.color.blue, alpha);
-        this.circle.fillColor.alpha = alphaBase;
-
-        p.add(this.hist[i]);
-        p.add(this.hist[i-1]);
-      }
+        path.strokeColor = new paper.Color(self.color.red, self.color.green, self.color.blue, alpha);
+        path.strokeWidth = self.diameter * ratio;
+      });
 
       this.circle.position = next;
     }
   }
 
   constructor(id, color, startPoint, destPoint, vel, resolution, mass) {
-    this.color = color;
-    this.id = id;
-    this.mass = mass;
-    this.resolution = resolution;
+    this.id = id;                   // index of this comet
+    this.color = color;             // Paper.js Color of this comet
+    this.pos = startPoint;          // Paper.js Point of the start of this comet
+    this.dest = destPoint;          // Paper.js Point of hte destination
+    this.vel = vel;                 // Paper.js Point of the velocity
+    this.resolution = resolution;   // Tail length in line segments
+    this.mass = mass;               // Mass in world units
 
-    this.vel = vel;
-    this.pos = startPoint;
-    this.dest = destPoint;
+    this.hist = [];                 // History of all points this comet has visited up to this.resolution
+    this.paths = [];                // Paper.js Paths of this comet for each segment
 
-    this.hist = [];
-    this.paths = [];
+    this.justWrapped = false;       // When true, it means the comet just screen wrapped so we 
+                                    // dont want a line segment crossing the screen.
 
-    var diameter = (mass / 200) * 10;
+    this.diameter = (mass / 200) * 10;
 
-    this.circle = new paper.Path.Circle(new paper.Point(0,0), diameter / 2);
+    this.circle = new paper.Path.Circle(new paper.Point(0,0), this.diameter / 2);
     this.circle.position = startPoint;
     this.circle.fillColor = color;
 
-    for (var i = 0; i < this.resolution; i++)
-    {
-      var path = new paper.Path();
-      
-      path.strokeColor = new paper.Color(color.red, color.green, color.blue, (i+1) / resolution);
-      path.strokeWidth = diameter - ((resolution - i+1) / resolution) * diameter;
-
-      this.paths.push(path);
-    }
-
-    this.paths[0].onFrame = this.onFrame.bind(this);
+    // Build our first path segment here so we can set up our onFrame handler
+    this.nextPath = new paper.Path();
+    this.nextPath.onFrame = this.onFrame.bind(this);
   }
 }
 
@@ -157,13 +158,13 @@ class CometDemo {
 
     this.comets = [];
 
-    for (var i = 0; i < 10; i++)
+    for (var i = 0; i < NUM_COMETS; i++)
       this.comets.push(new Comet(i,
                         new paper.Color(Math.random(), Math.random(), Math.random()),
                         new paper.Point(Math.random() * WIDTH, Math.random() * HEIGHT),
                         new paper.Point(Math.random() * WIDTH, Math.random() * HEIGHT),
                         new paper.Point(Math.random() * 100 - 50, Math.random() * 100 - 50),
-                        50,
+                        TAIL_LENGTH,
                         Math.random() * 100 + 100));
 
     paper.view.onFrame = function (event) {
@@ -181,7 +182,8 @@ class CometDemo {
         <div className="demo-container">
           <div className="title">Comet Demo</div>
           <div className="description">Position your mouse to create a gravitational field to affect the comet trajectory.</div>
-          <div className="technologies">Uses Paper.js, React.js</div>
+          <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
+          <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
           <div className="canvas-container">
             <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} id="cometDemo" onMouseMove={this.onMouseMoveHandler.bind(this)} />
           </div>

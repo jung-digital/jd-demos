@@ -18,8 +18,9 @@ class DemoLink {
   render() {
     return (<div className="DemoLink" id={this.props.demo.name}>
              <a href="#" onClick={this.demo_onClickHandler.bind(this)}>
-               {this.props.demo.name} by {this.props.demo.author}
+               {this.props.demo.name} 
              </a>
+             &nbsp;by {this.props.demo.author}
            </div>);
   }
 };
