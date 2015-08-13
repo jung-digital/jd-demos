@@ -1,22 +1,17 @@
-/*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
-
 import React, { PropTypes } from 'react';
 import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 
-const WIDTH = 800,
-      HEIGHT = 600,
-      MAX_FORCE = 500,
-      TAIL_LENGTH = 40,
-      NUM_COMETS = 17;
+const WIDTH = 800,          // Width of canvas
+      HEIGHT = 600,         // Height of canvas
+      MAX_FORCE = 500,      // Maximum force that can be given to a comet (to keep from flinging into the abyss)
+      TAIL_LENGTH = 40,     // Tail length, in segments
+      NUM_COMETS = 17;      // Number of comets on the screen
 
-/**
- * A comet that moves toward this.m, which is designed to be the mouse.
- *
- * The comet trail fans outward from its current location through all the points it has traveled
- * between (one historical point every 1/resolution s.)
- */
+/*============================================
+ * A comet that has one gravitational source.
+ *============================================*/
 class Comet {
 
   setDest(point, mass) {
@@ -37,8 +32,8 @@ class Comet {
         m1 = this.mass,     // Mass of comet
         m2 = this.destMass; // Mass of mouse (planet)
 
-    // Accelerate toward the destination point (e.g. the mouse)
-    // r is vector from comet to the planet
+    // Accelerate toward the "planet" (e.g. the mouse)
+    // r is the vector from comet to the "planet"
     var r = this.dest.subtract(this.pos),
         dist = r.length,
         rLengthSquared = dist * dist;
@@ -56,7 +51,7 @@ class Comet {
       this.pos = next;
       this.wrap();
       
-      // shift() dead end of tail
+      // shift() dead end of tail off
       if (this.hist.length >= this.resolution)
       {
         // Take item from tail and make available to cache
@@ -66,7 +61,7 @@ class Comet {
 
       this.hist.push(next);
 
-      //Add new tail head
+      // Add new tail head
       if (!this.justWrapped && this.hist.length > 1)
       {
         this.nextPath = this.nextPath || new paper.Path();
@@ -80,12 +75,11 @@ class Comet {
       }
       else this.justWrapped = false;
 
-      // The base *glow* off of the entire comet
-      //   Min: 0.4
-      //   Max: 1.0
+      // The base "glow" off of the entire comet, which just ends up being alpha
+      //   Min: 0.4, Max: 1.0
       // Glow is inversely proportional to distance.
       const alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
-      
+
       this.circle.fillColor.alpha = alphaBase;
 
       // Readjust each segments width and alpha based on index distance from head
@@ -101,6 +95,7 @@ class Comet {
     }
   }
 
+  // Comet()
   constructor(id, color, startPoint, destPoint, vel, resolution, mass) {
     this.id = id;                   // index of this comet
     this.color = color;             // Paper.js Color of this comet
@@ -116,7 +111,7 @@ class Comet {
     this.justWrapped = false;       // When true, it means the comet just screen wrapped so we 
                                     // dont want a line segment crossing the screen.
 
-    this.diameter = (mass / 200) * 10;
+    this.diameter = (mass / 200) * 10; // Improper math for mass, but whatever.
 
     this.circle = new paper.Path.Circle(new paper.Point(0,0), this.diameter / 2);
     this.circle.position = startPoint;
@@ -128,6 +123,9 @@ class Comet {
   }
 }
 
+/*============================================
+ * The actual demo JSX component
+ *============================================*/
 @withStyles(styles)
 @withStyles(demoStyles)
 class CometDemo {
@@ -167,13 +165,7 @@ class CometDemo {
                         TAIL_LENGTH,
                         Math.random() * 100 + 100));
 
-    paper.view.onFrame = function (event) {
-      paper.view.draw();
-    };
-  };
-
-  componentWillUpdate() {
-
+    paper.view.onFrame = () => paper.view.draw();
   };
 
   render() {
