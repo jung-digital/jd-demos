@@ -5,25 +5,25 @@ import React, { PropTypes } from 'react';
 class Line {
   constructor() {
     try {
-    this.path = new paper.Path();
-    this.path.fillColor = undefined;
-    this.path.strokeColor = 'green';
-    this.path.strokeWidth = 2;
+      this.path = new paper.Path();
+      this.path.fillColor = undefined;
+      this.path.strokeColor = 'green';
+      this.path.strokeWidth = 2;
 
-    // Left side
-    var cur = new paper.Point(0, Math.random() * 500);
-    this.path.moveTo(cur);
+      // Left side
+      var cur = new paper.Point(0, Math.random() * 500);
+      this.path.moveTo(cur);
 
-    while (cur.x < 800)
-    {
-      cur = cur.add(new paper.Point(Math.random() * 50 + 25, Math.random() * 50 - 25));
-      this.path.lineTo(cur);
-    }
+      while (cur.x < 800)
+      {
+        cur = cur.add(new paper.Point(Math.random() * 50 + 25, Math.random() * 50 - 25));
+        this.path.lineTo(cur);
+      }
 
-    this.path.smooth();
-  }catch (e) {
-    console.log(e);
-  };
+      this.path.smooth();
+    }catch (e) {
+      console.log(e);
+    };
   }
 };
 

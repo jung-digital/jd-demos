@@ -1,6 +1,13 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
 import React, { PropTypes } from 'react';
+import styles from './index.css';
+import demoStyles from '../demo.css';
+import withStyles from '../../../decorators/withStyles';
+
+const WIDTH = 800;
+const HEIGHT = 600;
+const MAX_FORCE = 500;
 
 /**
  * A comet that moves toward this.m, which is designed to be the mouse.
@@ -17,10 +24,12 @@ class Comet {
 
   wrap() {
     var reset = false;
-    if (this.pos.x < 0) {reset = true; this.pos.x = 800};
-    if (this.pos.x > 800) {reset = true; this.pos.x = 0};
-    if (this.pos.y < 0) {reset = true; this.pos.y = 500};
-    if (this.pos.y > 500) {reset = true; this.pos.y = 0};
+
+    if (this.pos.x < 0) {reset = true; this.pos.x = WIDTH};
+    if (this.pos.x > WIDTH) {reset = true; this.pos.x = 0};
+    if (this.pos.y < 0) {reset = true; this.pos.y = HEIGHT};
+    if (this.pos.y > HEIGHT) {reset = true; this.pos.y = 0};
+
     if (reset)
     {
       this.hist = [];
@@ -60,12 +69,25 @@ class Comet {
       if (this.hist.length >= this.resolution)
         this.hist.shift(); // Remove the first segment, to make a trail
 
+      // The base *glow* of the entire comet
+      //   Min: 0.2
+      //   Max: 1.0
+      // Glow is inversely proportional to distance.
+      var alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
+
       // Now we create the actual paths that taper and fade
       for (var i = this.hist.length-1; i > 1; i--)
       {
-        this.paths[i].removeSegments();
-        this.paths[i].add(this.hist[i]);
-        this.paths[i].add(this.hist[i-1]);
+        var p = this.paths[i];
+
+        p.removeSegments();
+
+        var alpha = ((i+1) / this.resolution) * alphaBase;
+        p.strokeColor = new paper.Color(this.color.red, this.color.green, this.color.blue, alpha);
+        this.circle.fillColor.alpha = alphaBase;
+
+        p.add(this.hist[i]);
+        p.add(this.hist[i-1]);
       }
 
       this.circle.position = next;
@@ -73,6 +95,7 @@ class Comet {
   }
 
   constructor(id, color, startPoint, destPoint, vel, resolution, mass) {
+    this.color = color;
     this.id = id;
     this.mass = mass;
     this.resolution = resolution;
@@ -104,6 +127,8 @@ class Comet {
   }
 }
 
+@withStyles(styles)
+@withStyles(demoStyles)
 class CometDemo {
 
   onMouseMoveHandler(event) {
@@ -124,10 +149,10 @@ class CometDemo {
 
     this.rasterBackground = this.background.rasterize();
 
-    for (var i = 0; i < 500; i++){
+    for (var i = 0; i < 1000; i++){
       this.rasterBackground.setPixel(
         new paper.Point(Math.random() * this.rasterBackground.width, Math.random() * this.rasterBackground.height),
-        new paper.Color(Math.random(), Math.random(), Math.random()));
+        new paper.Color(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.5));
     }
 
     this.comets = [];
@@ -135,8 +160,8 @@ class CometDemo {
     for (var i = 0; i < 10; i++)
       this.comets.push(new Comet(i,
                         new paper.Color(Math.random(), Math.random(), Math.random()),
-                        new paper.Point(Math.random() * 800, Math.random() * 500),
-                        new paper.Point(Math.random() * 800, Math.random() * 500),
+                        new paper.Point(Math.random() * WIDTH, Math.random() * HEIGHT),
+                        new paper.Point(Math.random() * WIDTH, Math.random() * HEIGHT),
                         new paper.Point(Math.random() * 100 - 50, Math.random() * 100 - 50),
                         50,
                         Math.random() * 100 + 100));
@@ -152,10 +177,15 @@ class CometDemo {
 
   render() {
     return (
-      <div className="Comet">
-        <h1>Comet Demo</h1>
-        <div>Use your mouse to direct the comets!</div>
-        <canvas width="800" height="400" id="cometDemo" onMouseMove={this.onMouseMoveHandler.bind(this)} />
+      <div className="CometDemo">
+        <div className="demo-container">
+          <div className="title">Comet Demo</div>
+          <div className="description">Position your mouse to create a gravitational field to affect the comet trajectory.</div>
+          <div className="technologies">Uses Paper.js, React.js</div>
+          <div className="canvas-container">
+            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} id="cometDemo" onMouseMove={this.onMouseMoveHandler.bind(this)} />
+          </div>
+        </div>
       </div>
     );
   }
