@@ -25,6 +25,10 @@ class CometDemo {
                                                                event.clientY - rect.top), 10000));
   };
 
+  onMouseOutHandler(event) {
+    this.comets.forEach(comet => comet.setDest());
+  };
+
   componentDidMount() {
     this.canvas = document.getElementById('cometDemo');
     paper.setup(this.canvas);
@@ -64,7 +68,9 @@ class CometDemo {
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
           <div className="canvas-container">
-            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} id="cometDemo" onMouseMove={this.onMouseMoveHandler.bind(this)} />
+            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} id="cometDemo"
+                onMouseMove={this.onMouseMoveHandler.bind(this)}
+                onMouseOut={this.onMouseOutHandler.bind(this)}/>
           </div>
         </div>
       </div>

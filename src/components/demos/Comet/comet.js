@@ -25,64 +25,76 @@ class Comet {
 
     // Accelerate toward the "planet" (e.g. the mouse)
     // r is the vector from comet to the "planet"
-    var r = this.dest.subtract(this.pos),
-        dist = r.length,
-        rLengthSquared = dist * dist;
-
-    if (rLengthSquared != 0 && m2)
+    if (this.dest)
     {
-      var F = (G * m1 * m2) / rLengthSquared,
-          F = Math.min(F, 1000),
-          gravity = r.normalize(F);
+      var r = this.dest.subtract(this.pos),
+          dist = r.length,
+          rLengthSquared = dist * dist;
 
-      this.vel = this.vel.add(gravity.multiply(event.delta));
-
-      var next = this.pos.add(this.vel.multiply(event.delta));
-
-      this.pos = next;
-      this.wrap();
-      
-      // shift() dead end of tail off
-      if (this.hist.length >= this.resolution)
+      if (rLengthSquared != 0 && m2)
       {
-        // Take item from tail and make available to cache
-        this.nextPath = this.paths.shift();
-        this.hist.shift(); // Remove the first segment, to make a trail
+        var F = (G * m1 * m2) / rLengthSquared,
+            F = Math.min(F, 1000),
+            gravity = r.normalize(F);
+
+        this.vel = this.vel.add(gravity.multiply(event.delta));
+
+        var next = this.pos.add(this.vel.multiply(event.delta));
+
+        this.pos = next;
+        this.wrap();
+        
+        // shift() dead end of tail off
+        if (this.hist.length >= this.resolution)
+        {
+          // Take item from tail and make available to cache
+          this.nextPath = this.paths.shift();
+          this.nextPath = this.nextPath == 'nopath' ? undefined : this.nextPath;
+
+          this.hist.shift(); // Remove the first segment, to make a trail
+        }
+
+        this.hist.push(next);
+
+        // Add new tail head
+        if (!this.justWrapped && this.hist.length > 1)
+        {
+          this.nextPath = this.nextPath || new paper.Path();
+
+          this.nextPath.removeSegments();
+          this.nextPath.add(this.hist[this.hist.length-1]);
+          this.nextPath.add(this.hist[this.hist.length-2]);
+
+          this.paths.push(this.nextPath);
+          this.nextPath = undefined;
+        }
+        else {
+          // We add a 'dummy' path in so that the indexing for alpha still works properly.
+          this.paths.push('nopath');
+
+          this.justWrapped = false;
+        }
+
+        // The base "glow" off of the entire comet, which just ends up being alpha
+        //   Min: 0.4, Max: 1.0
+        // Glow is inversely proportional to distance.
+        const alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
+
+        this.circle.fillColor.alpha = alphaBase;
+
+        // Readjust each segments width and alpha based on index distance from head
+        this.paths.forEach((path, ix) => {
+          if (path == 'nopath') return;
+
+          const ratio = (ix+1) / self.resolution,
+                alpha = ratio * alphaBase;
+
+          path.strokeColor = new paper.Color(self.color.red, self.color.green, self.color.blue, alpha);
+          path.strokeWidth = self.diameter * ratio;
+        });
+
+        this.circle.position = next;
       }
-
-      this.hist.push(next);
-
-      // Add new tail head
-      if (!this.justWrapped && this.hist.length > 1)
-      {
-        this.nextPath = this.nextPath || new paper.Path();
-
-        this.nextPath.removeSegments();
-        this.nextPath.add(this.hist[this.hist.length-1]);
-        this.nextPath.add(this.hist[this.hist.length-2]);
-
-        this.paths.push(this.nextPath);
-        this.nextPath = undefined;
-      }
-      else this.justWrapped = false;
-
-      // The base "glow" off of the entire comet, which just ends up being alpha
-      //   Min: 0.4, Max: 1.0
-      // Glow is inversely proportional to distance.
-      const alphaBase = Math.max(0.4, Math.min(Math.abs(100/dist), 1));
-
-      this.circle.fillColor.alpha = alphaBase;
-
-      // Readjust each segments width and alpha based on index distance from head
-      this.paths.forEach((path, ix) => {
-        const ratio = (ix+1) / self.resolution,
-              alpha = ratio * alphaBase;
-
-        path.strokeColor = new paper.Color(self.color.red, self.color.green, self.color.blue, alpha);
-        path.strokeWidth = self.diameter * ratio;
-      });
-
-      this.circle.position = next;
     }
   }
 
