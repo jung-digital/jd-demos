@@ -8,9 +8,9 @@ import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
 
-const WIRES = 20,               // Total wires to generate for sparks to run along
-      SPARKS = 20,              // Maximum sparks to run at a time
-      SPARK_VEL = 1200,          // Velocity of each spark
+const WIRES = 10,               // Total wires to generate for sparks to run along
+      SPARKS = 5,              // Maximum sparks to run at a time
+      SPARK_VEL = 200,          // Velocity of each spark
       SPARK_PROB_SECOND = 0.2, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
@@ -38,32 +38,18 @@ class DigitalSparkDemo {
 
         s.spark(wire.path, SPARK_VEL);
       }
-    })
+    });
   };
 
-  canvasRender() {
-
-  };
-
-  pathRedraw(path, ratio) {
+  pathRedraw(spark, path, ratio) {
     ratio = (1.0 - (Math.abs(ratio - 0.5) * 2)) * 0.5;
 
+    paper.project.activeLayer.addChild(path);
+
+    path.strokeColor = spark.options.color.clone();
     path.strokeColor.alpha = ratio;
-    path.strokeWidth = 8 * ratio;
+    path.strokeWidth = 12 * ratio;
     path.strokeCap = 'butt';
-  }
-
-  pathCallback(options, position, history, cachedPath) {
-    var path = cachedPath || new paper.Path();
-
-    path.removeSegments();
-
-    path.add(history[history.length-1]);
-    path.add(history[history.length-2]);
-
-    path.strokeColor = options.color;
-    
-    return path;
   }
 
   componentDidMount() {
@@ -84,14 +70,16 @@ class DigitalSparkDemo {
             strokeColor: 'blue',
             strokeWidth: 0
           }),
+          detail: 500,
           autoGen: true
         }));
 
     for (var i = 0; i < SPARKS; i++)
       this.sparks.push(new Spark({
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
-          pathCallback: this.pathCallback,
-          pathRedraw: this.pathRedraw
+          pathRedraw: this.pathRedraw,
+          sparkLength: 500,
+          sparkResolution: 25
         }));
 
     paper.view.onFrame = (event) => {
