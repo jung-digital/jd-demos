@@ -8,10 +8,10 @@ import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
 
-const WIRES = 1,               // Total wires to generate for sparks to run along
-      SPARKS = 1,              // Maximum sparks to run at a time
-      SPARK_VEL = 500,          // Velocity of each spark
-      SPARK_PROB_SECOND = 1.0, // Probability of a spark per second
+const WIRES = 20,               // Total wires to generate for sparks to run along
+      SPARKS = 20,              // Maximum sparks to run at a time
+      SPARK_VEL = 1200,          // Velocity of each spark
+      SPARK_PROB_SECOND = 0.2, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
 
@@ -35,6 +35,7 @@ class DigitalSparkDemo {
       if (shouldSpark)
       {
         var wire = util.ranItem(this.wires);
+
         s.spark(wire.path, SPARK_VEL);
       }
     })
@@ -44,7 +45,15 @@ class DigitalSparkDemo {
 
   };
 
-  pathCallback(position, history, cachedPath) {
+  pathRedraw(path, ratio) {
+    ratio = (1.0 - (Math.abs(ratio - 0.5) * 2)) * 0.5;
+
+    path.strokeColor.alpha = ratio;
+    path.strokeWidth = 8 * ratio;
+    path.strokeCap = 'butt';
+  }
+
+  pathCallback(options, position, history, cachedPath) {
     var path = cachedPath || new paper.Path();
 
     path.removeSegments();
@@ -52,9 +61,8 @@ class DigitalSparkDemo {
     path.add(history[history.length-1]);
     path.add(history[history.length-2]);
 
-    path.strokeColor = 'green';
-    path.strokeWidth = 5;
-
+    path.strokeColor = options.color;
+    
     return path;
   }
 
@@ -70,16 +78,21 @@ class DigitalSparkDemo {
 
     for (var i = 0; i < WIRES; i++)
       this.wires.push(new Wire({
+          type: 1,
           bounds: {left: 0, right: WIDTH, top: 0, bottom: HEIGHT},
           path: new paper.Path({
             strokeColor: 'blue',
-            strokeWidth: 1
+            strokeWidth: 0
           }),
           autoGen: true
         }));
 
     for (var i = 0; i < SPARKS; i++)
-      this.sparks.push(new Spark({pathCallback: this.pathCallback}));
+      this.sparks.push(new Spark({
+          color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
+          pathCallback: this.pathCallback,
+          pathRedraw: this.pathRedraw
+        }));
 
     paper.view.onFrame = (event) => {
       this.onFrame(event);
