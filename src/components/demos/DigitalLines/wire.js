@@ -26,11 +26,14 @@ class Wire {
         cur = start,
         lastDir = 0;
 
-    var scircle = new paper.Path.Circle(start, 5);
-    scircle.fillColor = 'green';
+    if (this.debugStartEnd)
+    {
+      var scircle = new paper.Path.Circle(start, 5);
+      scircle.fillColor = 'green';
 
-    var ecircle = new paper.Path.Circle(end, 5);
-    ecircle.fillColor = 'red';
+      var ecircle = new paper.Path.Circle(end, 5);
+      ecircle.fillColor = 'red';
+    }
 
     var loops = 0;
     while (!cur.equals(end) && loops++ < 100)
@@ -47,8 +50,6 @@ class Wire {
 
       var next = undefined,
           disToEnd = end.subtract(cur).length;
-
-      //console.log('disToEnd', disToEnd);
 
       if (disToEnd < detail)
       {
@@ -80,8 +81,6 @@ class Wire {
 
         cur = next;
       }
-
-      //console.log('cur', cur);
     }
 
     this.buildPath();
@@ -89,23 +88,26 @@ class Wire {
 
   buildPath() {
     this.path.moveTo(this.points[0]);
-    this.points.forEach((p) => {
-      console.log(p);
-      this.path.lineTo(p)
-    });
-    this.path.smooth();
+
+    this.points.forEach(this.path.lineTo.bind(this.path));
+
+    if (this.type === WireTypes.CURVED)
+      this.path.smooth();
   }
 
-  constructor(type, bounds, path, autoGen, detail) {
-    detail = detail || 150;
+  constructor(options) {
+    options = options || {};
 
-    this.type = type === undefined ? 1 : type;
-    this.bounds = bounds; // Paper.js View object
-    this.path = path; // Paper.js Path object
+    this.detail = options.detail || 150;
+
+    this.type = options.type === undefined ? 1 : options.type;
+    this.bounds = options.bounds; // Paper.js View object
+    this.path = options.path; // Paper.js Path object
+    this.debugStartEnd = options.debugStartEnd;
 
     this.points = []; // ???
 
-    if (autoGen) this.generate(util.ranItem([1,2,3,4]), util.ranItem([1,2,3,4]), detail, this.bounds);
+    if (options.autoGen) this.generate(util.ranItem([1,2,3,4]), util.ranItem([1,2,3,4]), this.detail, this.bounds);
   }
 }
 
