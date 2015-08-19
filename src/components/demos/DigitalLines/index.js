@@ -8,10 +8,10 @@ import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
 
-const WIRES = 10,               // Total wires to generate for sparks to run along
-      SPARKS = 50,              // Maximum sparks to run at a time
-      SPARK_VEL = 1000,          // Velocity of each spark
-      SPARK_PROB_SECOND = 0.2, // Probability of a spark per second
+const WIRES = 50,               // Total wires to generate for sparks to run along
+      SPARKS = 20,              // Maximum sparks to run at a time
+      SPARK_VEL = 1200,          // Velocity of each spark
+      SPARK_PROB_SECOND = 0.3, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
 
@@ -47,8 +47,8 @@ class DigitalSparkDemo {
     paper.project.activeLayer.addChild(path);
 
     path.strokeColor = spark.options.color.clone();
-    path.strokeColor.alpha = ratio;
-    path.strokeWidth = 12 * ratio;
+    path.strokeColor.alpha = ratio * 0.5;
+    path.strokeWidth = 6 * ratio;
     path.strokeCap = 'butt';
   }
 
@@ -65,7 +65,7 @@ class DigitalSparkDemo {
     for (var i = 0; i < WIRES; i++)
       this.wires.push(new Wire({
           type: 0,
-          bounds: {left: 0, right: WIDTH, top: 0, bottom: HEIGHT},
+          bounds: {left: -50, right: WIDTH + 100, top: -50, bottom: HEIGHT + 50},
           path: new paper.Path({
             strokeColor: 'blue',
             strokeWidth: 0
@@ -78,7 +78,7 @@ class DigitalSparkDemo {
       this.sparks.push(new Spark({
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
-          sparkLength: Math.random() * 500 + 100,
+          sparkLength: Math.random() * 500 + 300,
           sparkResolution: 50
         }));
 
