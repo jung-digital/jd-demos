@@ -9,8 +9,8 @@ import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
 
 const WIRES = 10,               // Total wires to generate for sparks to run along
-      SPARKS = 5,              // Maximum sparks to run at a time
-      SPARK_VEL = 200,          // Velocity of each spark
+      SPARKS = 50,              // Maximum sparks to run at a time
+      SPARK_VEL = 1000,          // Velocity of each spark
       SPARK_PROB_SECOND = 0.2, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
@@ -64,7 +64,7 @@ class DigitalSparkDemo {
 
     for (var i = 0; i < WIRES; i++)
       this.wires.push(new Wire({
-          type: 1,
+          type: 0,
           bounds: {left: 0, right: WIDTH, top: 0, bottom: HEIGHT},
           path: new paper.Path({
             strokeColor: 'blue',
@@ -78,8 +78,8 @@ class DigitalSparkDemo {
       this.sparks.push(new Spark({
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
-          sparkLength: 500,
-          sparkResolution: 25
+          sparkLength: Math.random() * 500 + 100,
+          sparkResolution: 50
         }));
 
     paper.view.onFrame = (event) => {
@@ -94,8 +94,8 @@ class DigitalSparkDemo {
 
     return <div className="DigitalLines">
         <div className="demo-container">
-          <div className="title">Digital Spark Demo</div>
-          <div className="description">Position your mouse to create a gravitational field to affect the comet trajectory.</div>
+          <div className="title">Digital Spark</div>
+          <div className="description"></div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
           <div className="canvas-container">

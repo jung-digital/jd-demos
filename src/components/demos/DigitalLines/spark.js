@@ -24,7 +24,7 @@ class Spark {
 
       this.position += this.velocity * event.delta;
 
-      var right = undefined,
+      var next = this.followPath.clone(),
           ratio = 1 / this.sparkResolution,
           offset = ratio * this.sparkLength;
 
@@ -34,23 +34,25 @@ class Spark {
         return;
       }
 
+      var pos = this.position - this.sparkLength;
+
       for (var r = 0; r < this.sparkResolution; r++) {
-        right = right || this.followPath.clone();
+        var cur = next;
 
-        if (right)
+        if (cur && pos > 0)
         {
-          var left = right;
+          next = cur.split(this.paths.length == 0 ? pos : offset);
 
-          right = left.split(this.paths.length == 0 ? this.position : offset);
+          this.paths.push(cur);
 
-          this.paths.push(left);
-
-          this.pathRedraw(this, left, r / this.sparkResolution);
+          this.pathRedraw(this, cur, r / this.sparkResolution);
         }
+
+        pos += offset;
       }
 
-      if (right)
-        right.remove();
+      if (next)
+        next.remove();
     }
   }
 

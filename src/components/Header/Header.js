@@ -18,8 +18,7 @@ class Header {
           </a>
           <Navigation className="Header-nav" />
           <div className="Header-banner">
-            <h1 className="Header-bannerTitle">JavaScript Demos</h1>
-            <p className="Header-bannerDesc">Math, graphics, web components, and all things fun.</p>
+            <h1 className="Header-bannerTitle">Demonstrations</h1>
           </div>
         </div>
       </div>
