@@ -12,7 +12,7 @@ class DemoLink {
     Dispatcher.dispatch({
       type: ActionTypes.CHANGE_LOCATION,
       path: '/demo/' + this.props.demo.key
-    });
+    }); 
   };
 
   render() {

@@ -7,6 +7,8 @@ import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
+import Dispatcher from '../../../core/Dispatcher';
+import DemoBase from '../DemoBase';
 
 const WIRES = 50,               // Total wires to generate for sparks to run along
       SPARKS = 30,              // Maximum sparks to run at a time
@@ -20,10 +22,7 @@ const WIRES = 50,               // Total wires to generate for sparks to run alo
  *============================================*/
 @withStyles(styles)
 @withStyles(demoStyles)
-class DigitalSparkDemo {
-
-  static propTypes = {
-  };
+class DigitalSparkDemo extends DemoBase {
 
   onFrame(event) {
     this.sparks.forEach(s => {
@@ -94,10 +93,11 @@ class DigitalSparkDemo {
 
     return <div className="DigitalLines">
         <div className="demo-container">
+          {this.getBackButton()}
           <div className="title">Digital Spark</div>
           <div className="description"></div>
-          <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
-          <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
+          <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/DigitalLines/index.js">Source</a></div>
+          <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Algorithm to Improve Subpath Speed</div>
           <div className="canvas-container">
             <canvas className="demo-canvas" style={{width:WIDTH, height:HEIGHT}} id="digitalLinesCanvas" />
           </div>

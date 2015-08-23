@@ -3,6 +3,8 @@ import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import Comet from './comet.js';
+import Dispatcher from '../../../core/Dispatcher';
+import DemoBase from '../DemoBase';
 
 const WIDTH = 800,          // Width of canvas
       HEIGHT = 600,         // Height of canvas
@@ -16,7 +18,7 @@ const WIDTH = 800,          // Width of canvas
  *============================================*/
 @withStyles(styles)
 @withStyles(demoStyles)
-class CometDemo {
+class CometDemo extends DemoBase {
 
   onMouseMoveHandler(event) {
     var rect = this.canvas.getBoundingClientRect();
@@ -63,6 +65,7 @@ class CometDemo {
     return (
       <div className="CometDemo">
         <div className="demo-container">
+          {this.getBackButton()}
           <div className="title">Comet Demo</div>
           <div className="description">Position your mouse to create a gravitational field to affect the comet trajectory.</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>

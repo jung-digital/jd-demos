@@ -1,7 +1,7 @@
 @import '../variables.css';
 
 .title {
-  font-size: 28px;
+  font-size: 36px;
   font-weight: bold;
   margin:25px;
 }
@@ -19,9 +19,11 @@
 }
 
 .demo-container {
+  position: relative;
   margin: 0 auto;
   padding: 0 0 40px;
   max-width: var(--max-content-width);
+  color: #555555;
 }
 
 .demo-canvas {
@@ -30,4 +32,12 @@
 
 .canvas-container {
   margin: 25px;
+}
+
+.back {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+  font-weight: bold;
 }

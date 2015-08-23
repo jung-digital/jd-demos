@@ -5,7 +5,6 @@ import styles from './App.css';
 import withContext from '../../decorators/withContext';
 import withStyles from '../../decorators/withStyles';
 import Header from '../Header';
-import Feedback from '../Feedback';
 import Footer from '../Footer';
 
 @withContext
@@ -21,7 +20,7 @@ class App {
     return !this.props.error ? (
       <div>
         <Header />
-        {this.props.children}
+          {this.props.children}
         <Footer />
       </div>
     ) : this.props.children;
