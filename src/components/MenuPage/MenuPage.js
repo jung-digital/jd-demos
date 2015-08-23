@@ -16,11 +16,12 @@ class DemoLink {
   };
 
   render() {
-    return (<div className="DemoLink" id={this.props.demo.name}>
-             <a href="#" onClick={this.demo_onClickHandler.bind(this)}>
-               {this.props.demo.name} 
-             </a>
-             &nbsp;by {this.props.demo.author}
+    return (<div className="DemoLink" id={this.props.demo.name} onClick={this.demo_onClickHandler.bind(this)}>
+              <img src={this.props.demo.image} />
+              <div className="content">
+                <div className="title">{this.props.demo.name} </div>
+                <div className="description">{this.props.demo.description}</div> 
+              </div>
            </div>);
   }
 };

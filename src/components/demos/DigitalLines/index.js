@@ -9,8 +9,8 @@ import withStyles from '../../../decorators/withStyles';
 import util from '../util/util';
 
 const WIRES = 50,               // Total wires to generate for sparks to run along
-      SPARKS = 20,              // Maximum sparks to run at a time
-      SPARK_VEL = 1200,          // Velocity of each spark
+      SPARKS = 30,              // Maximum sparks to run at a time
+      SPARK_VEL = 1000,          // Velocity of each spark
       SPARK_PROB_SECOND = 0.3, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
@@ -111,5 +111,7 @@ export default {
   key: 'digitalSparks',
   author: 'Josh',
   technologies: [],
+  image: 'digitalspark.png',
+  description: 'Light, Airy, and Customizable Background',
   component: DigitalSparkDemo
 };

@@ -83,5 +83,7 @@ export default {
   key: 'comet',
   author: 'Josh',
   technologies: [],
+  image: 'comet.png',
+  description: 'Your Mouse is a Planet',
   component: CometDemo
 };

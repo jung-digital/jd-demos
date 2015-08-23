@@ -9,6 +9,8 @@
 .Header {
   background: #5aa02c;
   color: #fff;
+  box-shadow: 0px 2px 2px grey;
+  border-bottom: 1px solid black;
 }
 
 .Header-container {

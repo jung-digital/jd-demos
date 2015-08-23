@@ -9,7 +9,50 @@
 }
 
 .DemoLink {
+  color: #555555;
+  cursor: pointer;
+  padding: 10px;
+  position:relative;
   font-weight: bold;
   font-size: 28px;
   margin:25px;
+  border: 2px solid #efefef;
+  box-shadow: 2px 2px 2px #efefef;
+
+  transition: background-color 0.2s ease;
+}
+
+.DemoLink .content {
+  position: absolute;
+  left: 300px;
+  top: 30%;
+  width: 75%;
+}
+
+.DemoLink .content * {
+  line-height: 50px;
+  transition: font 0.2s ease;
+}
+
+.title {
+  font-size: 40px;
+}
+
+.author {
+  font-size: 18px;
+}
+
+.description {
+  font-size: 18px;
+  font-style: italic;
+  margin-right: 20%;
+  font-size: 30px;
+}
+
+.DemoLink:hover {
+  background-color: #eff1ef;
+}
+
+.DemoLink:hover .title {
+  font-size: 48px;
 }
