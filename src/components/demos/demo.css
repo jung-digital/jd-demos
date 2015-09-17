@@ -40,6 +40,17 @@
   top: 10px;
   cursor: pointer;
   font-weight: bold;
+  text-decoration: none;
+  color: #000;
+}
+
+.back:hover {
+  text-decoration: none;
+  color: #000;
+}
+
+.back * {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 768px) {

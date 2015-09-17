@@ -20,8 +20,8 @@ const WIDTH = 800,          // Width of canvas
 @withStyles(demoStyles)
 class CometDemo extends DemoBase {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   onMouseMoveHandler(event) {
@@ -33,12 +33,20 @@ class CometDemo extends DemoBase {
 
   onMouseOutHandler(event) {
     this.comets.forEach(comet => comet.setDest());
-  };
+  }
+
+  onTouchStartHandler(event) {
+    console.log('touch start', event);
+  }
+
+  onTouchMoveHandler(event) {
+    console.log('touch move', event);
+  }
 
   componentDidMount() {
     super.componentDidMount();
 
-    this.canvas = document.getElementById('cometDemo');
+    this.canvas = document.getElementById('cometCanvas');
     paper.setup(this.canvas);
 
     this.background = new paper.Path.Rectangle(paper.view.bounds);
@@ -68,7 +76,6 @@ class CometDemo extends DemoBase {
   };
 
   render() {
-    console.log('RENDER COMET');
     return (
       <div className="CometDemo">
         <div className="demo-container">
@@ -77,11 +84,7 @@ class CometDemo extends DemoBase {
           <div className="description">Position your mouse to create a gravitational field to affect the comet trajectory.</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
-          <div className="canvas-container">
-            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id="cometDemo"
-                onMouseMove={this.onMouseMoveHandler.bind(this)}
-                onMouseOut={this.onMouseOutHandler.bind(this)}/>
-          </div>
+          {this.getCanvasContainer(WIDTH, HEIGHT, 'cometCanvas')}
         </div>
       </div>
     );

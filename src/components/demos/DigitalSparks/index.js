@@ -27,8 +27,8 @@ const WIRES = 50,               // Total wires to generate for sparks to run alo
 @withStyles(demoStyles)
 class DigitalSparkDemo extends DemoBase {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   onFrame(event) {
@@ -62,6 +62,8 @@ class DigitalSparkDemo extends DemoBase {
   }
 
   componentDidMount() {
+    super.componentDidMount();
+
     // Get a reference to the canvas object
     var canvas = document.getElementById('digitalLinesCanvas');
 
@@ -108,9 +110,7 @@ class DigitalSparkDemo extends DemoBase {
           <div className="description"></div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/DigitalLines/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Algorithm to Improve Subpath Speed</div>
-          <div className="canvas-container">
-            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id="digitalLinesCanvas" />
-          </div>
+          {this.getCanvasContainer(WIDTH, HEIGHT, 'digitalLinesCanvas')}
         </div>
       </div>;
   }

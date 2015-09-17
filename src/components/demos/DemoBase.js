@@ -33,11 +33,39 @@ class DemoBase extends React.Component {
     Dispatcher.dispatch({type: ActionTypes.BACK_LOCATION});
   }
 
+  onMouseMoveHandler() {
+    // noop
+  }
+
+  onMouseOutHandler() {
+    // noop 
+  }
+
+  onTouchStartHandler() {
+    // noop 
+  }
+
+  onTouchMoveHandler() {
+    // noop 
+  }
+
   getBackButton() {
-    return <div className="back" onClick={this.back_onClickHandler.bind(this)}>
-             <i className="fa fa-arrow-left"></i>
-             &nbsp;Back
-          </div>;
+    return <a href="/" className="back">
+             <div>
+               <i className="fa fa-arrow-left"></i>
+               <span>&nbsp;Back</span>
+             </div>
+           </a>;
+  }
+
+  getCanvasContainer(width, height, canvasID) {
+    return <div className="canvas-container">
+             <canvas className="demo-canvas" width={width} height={height} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id={canvasID}
+                onMouseMove={this.onMouseMoveHandler.bind(this)}
+                onMouseOut={this.onMouseOutHandler.bind(this)}
+                onTouchStart={this.onTouchStartHandler.bind(this)}
+                onTouchMove={this.onTouchMoveHandler.bind(this)} />
+            </div>;
   }
 
   componentDidMount() {
