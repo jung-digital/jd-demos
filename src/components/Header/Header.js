@@ -14,7 +14,7 @@ class Header {
       <div className="Header">
         <div className="Header-container">
           <a className="Header-brand" href="/" onClick={Link.handleClick}>
-            <img className="Header-brandImg" src={require('./logo-white-small.png')} height="38" alt="Jung Digital LLC" />
+            <img className="Header-brandImg" src={require('./logo-white-small.png')} alt="Jung Digital LLC" />
           </a>
           <Navigation className="Header-nav" />
           <div className="Header-banner">
@@ -24,7 +24,6 @@ class Header {
       </div>
     );
   }
-
 }
 
 export default Header;

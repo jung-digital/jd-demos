@@ -1,9 +1,11 @@
 import DigitalSparks from './DigitalSparks/index.js';
 import Comet from './Comet/index.js';
+import Sparks from './Sparks/index.js';
 
 const all = [
         Comet,
-        DigitalSparks
+        DigitalSparks,
+        Sparks
       ],
       demosByKey = {};
 

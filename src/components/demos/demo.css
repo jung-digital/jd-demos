@@ -38,6 +38,19 @@
   position: absolute;
   right: 10px;
   top: 10px;
-  cursor: pointer;
+  cursor: 'pointer';
   font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .canvas-container {
+    margin: 25px 0px;
+  }
+
+  .demo-canvas {
+    border-left: none;
+    border-top: 5px solid #5aa02c;
+    border-right: none;
+    border-bottom: 5px solid #5aa02c;
+  }
 }

@@ -22,6 +22,11 @@
   transition: background-color 0.2s ease;
 }
 
+.DemoLink .image {
+  width: 256px;
+  height: 256px;
+}
+
 .DemoLink .content {
   position: absolute;
   left: 300px;
@@ -55,4 +60,33 @@
 
 .DemoLink:hover .title {
   font-size: 48px;
+}
+
+@media screen and (max-width: 768px) {
+  .DemoLink {
+    margin: 10px 0px 10px 0px;
+    font-size: 16px;
+  }
+
+  .DemoLink .content {
+    left: 120px;
+    top: 16%;
+  }
+
+  .DemoLink .content * {
+    line-height: 30px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .description {
+    font-size: 16px;
+  }
+
+  .DemoLink .image {
+    width: 96px;
+    height: 96px;
+  }
 }

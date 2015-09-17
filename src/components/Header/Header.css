@@ -15,7 +15,7 @@
 
 .Header-container {
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 20px 20px;
   max-width: var(--max-content-width);
 }
 
@@ -23,6 +23,10 @@
   color: color(var(--brand-color) lightness(+10%));
   text-decoration: none;
   font-size: 1.75em; /* ~28px */
+}
+
+.Header-brandImg {
+  height: 38px;
 }
 
 .Header-brandTxt {
@@ -42,8 +46,8 @@
   margin: 0;
   padding: 10px;
   font-weight: normal;
-  font-size: 4em;
   line-height: 1em;
+  font-size: 4em;
 }
 
 .Header-bannerDesc {
@@ -51,4 +55,14 @@
   color: rgba(255, 255, 255, .5);
   font-size: 1.25em;
   margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .Header-bannerTitle {
+    font-size: 2.5em;
+  }
+
+  .Header-brandImg {
+    height: 26px;
+  }
 }

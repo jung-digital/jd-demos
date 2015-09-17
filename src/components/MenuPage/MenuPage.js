@@ -17,7 +17,7 @@ class DemoLink {
 
   render() {
     return (<div className="DemoLink" id={this.props.demo.name} onClick={this.demo_onClickHandler.bind(this)}>
-              <img src={this.props.demo.image} />
+              <img src={this.props.demo.image} className="image" />
               <div className="content">
                 <div className="title">{this.props.demo.name} </div>
                 <div className="description">{this.props.demo.description}</div> 

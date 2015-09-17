@@ -10,6 +10,9 @@ import util from '../shared/util/util';
 import Dispatcher from '../../../core/Dispatcher';
 import DemoBase from '../DemoBase';
 
+/*============================================
+ * Constants
+ *============================================*/
 const WIRES = 50,               // Total wires to generate for sparks to run along
       SPARKS = 30,              // Maximum sparks to run at a time
       SPARK_VEL = 1000,          // Velocity of each spark
@@ -23,6 +26,10 @@ const WIRES = 50,               // Total wires to generate for sparks to run alo
 @withStyles(styles)
 @withStyles(demoStyles)
 class DigitalSparkDemo extends DemoBase {
+
+  constructor() {
+    super();
+  }
 
   onFrame(event) {
     this.sparks.forEach(s => {
@@ -102,7 +109,7 @@ class DigitalSparkDemo extends DemoBase {
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/DigitalLines/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Algorithm to Improve Subpath Speed</div>
           <div className="canvas-container">
-            <canvas className="demo-canvas" style={{width:WIDTH, height:HEIGHT}} id="digitalLinesCanvas" />
+            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id="digitalLinesCanvas" />
           </div>
         </div>
       </div>;

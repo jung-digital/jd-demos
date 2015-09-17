@@ -13,9 +13,6 @@ import ErrorPage from './components/ErrorPage';
 const router = new Router(on => {
 
   on('/demo/*', (state, next) => {
-    console.log('Loading demo', state);
-    console.log('Demos', Demos);
-
     var demoKey = state.path.split('/').pop(),
         demo = Demos[demoKey],
         demoComp = React.createElement(demo.component);
@@ -26,6 +23,7 @@ const router = new Router(on => {
   });
 
   on('/', async (state, next) => {
+    console.log('Route to menu')
     const content = await http.get(`/api/content?path=${state.path}`);
     return  <App context={state.context}>
               <MenuPage {...content} />

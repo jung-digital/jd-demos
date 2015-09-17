@@ -7,7 +7,7 @@ import Dispatcher from '../../../core/Dispatcher';
 import DemoBase from '../DemoBase';
 
 const WIDTH = 800,          // Width of canvas
-      HEIGHT = 600,         // Height of canvas
+      HEIGHT = 800 / 1.61,         // Height of canvas
       MAX_FORCE = 500,      // Maximum force that can be given to a comet (to keep from flinging into the abyss)
       TAIL_LENGTH = 40,     // Tail length, in segments
       NUM_COMETS = 17,      // Number of comets on the screen
@@ -19,6 +19,10 @@ const WIDTH = 800,          // Width of canvas
 @withStyles(styles)
 @withStyles(demoStyles)
 class CometDemo extends DemoBase {
+
+  constructor() {
+    super();
+  }
 
   onMouseMoveHandler(event) {
     var rect = this.canvas.getBoundingClientRect();
@@ -32,6 +36,8 @@ class CometDemo extends DemoBase {
   };
 
   componentDidMount() {
+    super.componentDidMount();
+
     this.canvas = document.getElementById('cometDemo');
     paper.setup(this.canvas);
 
@@ -62,6 +68,7 @@ class CometDemo extends DemoBase {
   };
 
   render() {
+    console.log('RENDER COMET');
     return (
       <div className="CometDemo">
         <div className="demo-container">
@@ -71,7 +78,7 @@ class CometDemo extends DemoBase {
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Comet/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Law of Universal Gravitation</div>
           <div className="canvas-container">
-            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} id="cometDemo"
+            <canvas className="demo-canvas" width={WIDTH} height={HEIGHT} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id="cometDemo"
                 onMouseMove={this.onMouseMoveHandler.bind(this)}
                 onMouseOut={this.onMouseOutHandler.bind(this)}/>
           </div>

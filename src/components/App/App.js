@@ -11,6 +11,9 @@ import Footer from '../Footer';
 @withStyles(styles)
 class App {
 
+  componentDidMount() {
+  }
+
   static propTypes = {
     children: PropTypes.element.isRequired,
     error: PropTypes.object
