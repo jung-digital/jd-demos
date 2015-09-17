@@ -6,7 +6,7 @@ import Spark from '../shared/spark';
 import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
-import util from '../util/util';
+import util from '../shared/util/util';
 import Dispatcher from '../../../core/Dispatcher';
 import DemoBase from '../DemoBase';
 
@@ -35,7 +35,10 @@ class DigitalSparkDemo extends DemoBase {
       {
         var wire = util.ranItem(this.wires);
 
-        s.spark(wire.path, SPARK_VEL);
+        s.spark({
+                  followPath: wire.path,
+                  velocity: SPARK_VEL
+                });
       }
     });
   };

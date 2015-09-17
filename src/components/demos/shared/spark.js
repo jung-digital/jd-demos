@@ -13,7 +13,7 @@ class Spark {
 
     this.type = options.type || 1;
     this.onFrameCallback = options.onFrameCallback;
-    this.followPath = options.path;
+    this.followPath = options.followPath;
     this.velocity = options.velocity;
 
     this.sparking = true;
@@ -25,9 +25,6 @@ class Spark {
   onFrame(event) {
     if (this.sparking)
     {
-      var ratio = 1 / this.sparkResolution,
-          offset = ratio * this.sparkLength;
-
       if (this.type === TYPE_FOLLOW)
       {
         this.position += this.velocity * event.delta;
@@ -43,11 +40,14 @@ class Spark {
         this.onFrameCallback.call(this);
       }
 
-      updateTail(this.followPath.clone());
+      this.updateTail(this.followPath.clone());
     }
   }
 
   updateTail(nextPath) {
+    var ratio = 1 / this.sparkResolution,
+        offset = ratio * this.sparkLength;
+
     this.paths.forEach(p => p.remove());
     this.paths = [];
 

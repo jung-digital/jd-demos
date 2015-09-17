@@ -1,4 +1,4 @@
-import util from '../util/util';
+import util from '../shared/util/util';
 
 export const WireTypes = {
   CURVED: 0,
