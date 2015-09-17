@@ -1,9 +1,9 @@
-import DigitalLines from './DigitalLines/index.js';
+import DigitalSparks from './DigitalSparks/index.js';
 import Comet from './Comet/index.js';
 
 const all = [
         Comet,
-        DigitalLines
+        DigitalSparks
       ],
       demosByKey = {};
 

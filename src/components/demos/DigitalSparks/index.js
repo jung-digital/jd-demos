@@ -2,7 +2,7 @@
 
 import React, { PropTypes } from 'react';
 import Wire from './wire';
-import Spark from './spark';
+import Spark from '../shared/spark';
 import styles from './index.css';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
