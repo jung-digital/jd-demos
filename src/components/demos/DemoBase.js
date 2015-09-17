@@ -29,13 +29,15 @@ class DemoBase extends React.Component {
     console.log('Resized!', this.state.canvasTargetWidth, this.state.canvasTargetHeight);
   }
 
+  back_onClickHandler(event) {
+    Dispatcher.dispatch({type: ActionTypes.BACK_LOCATION});
+  }
+
   getBackButton() {
-    return <a href="#">
-            <div className="back">
-               <i className="fa fa-arrow-left"></i>
-               &nbsp;Back
-            </div>
-          </a>;
+    return <div className="back" onClick={this.back_onClickHandler.bind(this)}>
+             <i className="fa fa-arrow-left"></i>
+             &nbsp;Back
+          </div>;
   }
 
   componentDidMount() {

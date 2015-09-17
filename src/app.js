@@ -56,8 +56,6 @@ function run() {
   });
 
   Dispatcher.register(action => {
-    console.log('ACTION', action);
-
     if (action.type === ActionTypes.CHANGE_LOCATION) {
       pathHistory.push(curPath);
 
@@ -69,14 +67,12 @@ function run() {
     if (action.type === ActionTypes.BACK_LOCATION)
     {
       var pathPrev = pathHistory.pop();
-      console.log('BACK AWAY!!!',pathPrev);
       if (pathPrev)
         goWestYoungMan({type: ActionTypes.CHANGE_LOCATION, path: pathPrev});
       curPath = pathPrev;
     }
 
     function goWestYoungMan(action) {
-      console.log('Route', action);
       router.dispatch({ path: action.path, context }, (state, component) => {
         ReactDOM.render(component, container);
       });
