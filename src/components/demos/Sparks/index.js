@@ -11,7 +11,7 @@ import DemoBase from '../DemoBase';
 /*============================================
  * Constants
  *============================================*/
-const SPARKS = 100,
+const SPARKS = 60,
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
 
@@ -20,12 +20,21 @@ const SPARKS = 100,
  *============================================*/
 @withStyles(demoStyles)
 class SparkDemo extends DemoBase {
+  constructor(props) {
+    super(props);
+
+    this.lastTime = 0;
+    this.gravity = new paper.Point(0, 980);
+  }
+
   pathRedraw(spark, path, ratio) {
+    ratio = 1 - ratio;
+
     paper.project.activeLayer.addChild(path);
 
     path.strokeColor = spark.options.color.clone();
-    path.strokeColor.alpha = ratio * 0.5;
-    path.strokeWidth = 6 * ratio;
+    path.strokeColor.alpha = ratio;
+    path.strokeWidth = 2 * ratio;
     path.strokeCap = 'butt';
   }
 
@@ -45,34 +54,54 @@ class SparkDemo extends DemoBase {
       this.sparks.push(new Spark({
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
-          sparkResolution: 10
+          sparkResolution: 8
         }));
 
     paper.view.onFrame = (event) => {
+      if (!this.lastTime)
+      {
+        this.lastTime = new Date().getTime();
+        this.elapsed = 0.01;
+      }
+      else
+      {
+        this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
+      }
+
       this.sparks.forEach(spark => {
         if (!spark.sparking)
         {
           this.startSpark(spark);
         }
-        
+
+        this.sparkOnFrame.call(spark, this);
         spark.onFrame(event);
       });
+
+      this.lastTime = new Date().getTime();
 
       paper.view.draw();
     }
   };
 
   startSpark(spark) {
+    var ranAngle = (Math.random() * 2) - 1 - (Math.PI / 2);
+
     spark.spark({
       type: 2,
-      onFrameCallback: this.sparkOnFrame,
-      position: new paper.Point(WIDTH / 2, HEIGHT / 2)
+      position: new paper.Point(WIDTH / 2, HEIGHT / 2),
+      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 300 + 100)
     });
   }
 
   // 'this' will be the Spark object itself.
-  sparkOnFrame() {
-    this.next(new paper.Point(Math.random() * 800, Math.random() * 600));
+  sparkOnFrame(demo) {
+    this.options.velocity = this.options.velocity.add(demo.gravity.multiply(demo.elapsed));
+    var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
+    this.next(nextPos);
+
+    if (nextPos.y > HEIGHT + 20)
+      this.reset();
   }
 
   render() {

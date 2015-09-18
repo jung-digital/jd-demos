@@ -8,6 +8,10 @@ const TYPE_FOLLOW = 1, // Follow a Paper.js Path object at a particular velocity
 
 class Spark {
 
+  reset() {
+    this.paths.forEach(p => p.remove());
+    this.sparking = false;
+  }
   spark(options) {
     if (this.sparking) return;
 
@@ -23,14 +27,16 @@ class Spark {
     this.velocity = options.velocity;
 
     this.sparking = true;
-    this.position = 0;          // Head position is 0 to this.followPath.length
+    this.position = this.options.position || 0;          // Head position is 0 to this.followPath.length
 
     this.paths = [];
-    this.points = undefined;    // Reset points for manual mode
+    this.points = this.options.position ? [this.options.position] : undefined;    // Reset points for manual mode
   }
 
   // Manual mode, set the next position of the spark
   next(pos) {
+    this.position = pos;
+
     this.points = this.points || [];
     this.points.push(pos);
 
@@ -55,7 +61,10 @@ class Spark {
       }
       else if (this.type === TYPE_MANUAL)
       {
-        this.onFrameCallback.call(this);
+        if (this.onFrameCallback)
+        {
+          this.onFrameCallback.call(this);
+        }
       }
 
       if (!this.points)
@@ -101,18 +110,25 @@ class Spark {
     {
       // Go backwards from the end, building up paths and letting the dev manually style them
       // ensuring that there are this.resolution # of paths.
-      for (var i = 0; i < this.sparkResolution-1; i++)
+      if (this.points.length > 1)
       {
-        this.paths[i] = this.paths[i] || new paper.Path();
+        for (var i = 0; i < this.points.length - 1; i++)
+        {
+          this.paths[i] = this.paths[i] || new paper.Path();
 
-        var start = this.points[this.points.length - (i+1)],
-            end = this.points[this.points.length - (i+2)];
+          var start = this.points[this.points.length - (i+1)],
+              end = this.points[this.points.length - (i+2)];
 
-        this.paths[i].moveTo(start);
-        this.paths[i].lineTo(end);
+              if (!start)
+                throw 'NO START!!';
+              if (!end)
+                throw 'NO END!!';
+          this.paths[i].moveTo(start);
+          this.paths[i].lineTo(end);
 
-        // Let dev manually style points based on ratio of start to end
-        this.pathRedraw(this, this.paths[i], i / this.sparkResolution);
+          // Let dev manually style points based on ratio of start to end
+          this.pathRedraw(this, this.paths[i], i / (this.sparkResolution-1));
+        }
       }
     }
   }
