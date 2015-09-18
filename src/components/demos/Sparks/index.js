@@ -25,6 +25,8 @@ class SparkDemo extends DemoBase {
 
     this.lastTime = 0;
     this.gravity = new paper.Point(0, 980);
+
+    this.sparkSource = new paper.Point(WIDTH / 2, HEIGHT / 5);
   }
 
   pathRedraw(spark, path, ratio) {
@@ -41,9 +43,9 @@ class SparkDemo extends DemoBase {
   componentDidMount() {
     super.componentDidMount();
 
-    var canvas = document.getElementById('sparkCanvas');
+    this.canvas = document.getElementById('sparkCanvas');
 
-    paper.setup(canvas);
+    paper.setup(this.canvas);
 
     this.background = new paper.Path.Rectangle(paper.view.bounds);
     this.background.fillColor = new paper.Color(0,0,0);
@@ -85,12 +87,12 @@ class SparkDemo extends DemoBase {
   };
 
   startSpark(spark) {
-    var ranAngle = (Math.random() * 2) - 1 - (Math.PI / 2);
+    var ranAngle = (Math.random() * 3) - 1.5 - (Math.PI / 2);
 
     spark.spark({
       type: 2,
-      position: new paper.Point(WIDTH / 2, HEIGHT / 2),
-      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 300 + 100)
+      position: this.sparkSource,
+      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 400 + 100)
     });
   }
 
@@ -100,12 +102,19 @@ class SparkDemo extends DemoBase {
     var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
     this.next(nextPos);
 
-    if (nextPos.y > HEIGHT + 20)
+    if (nextPos.y > HEIGHT + 50)
+    {
       this.reset();
+    }
+  }
+
+  onMouseMoveHandler(event) {
+    var rect = this.canvas.getBoundingClientRect();
+
+    this.sparkSource = new paper.Point(event.clientX - rect.left, event.clientY - rect.top);
   }
 
   render() {
-
     return <div className="Spark">
         <div className="demo-container">
           {this.getBackButton()}

@@ -87,6 +87,7 @@ class DigitalSparkDemo extends DemoBase {
 
     for (var i = 0; i < SPARKS; i++)
       this.sparks.push(new Spark({
+          type: 1,
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
           sparkLength: Math.random() * 500 + 300,

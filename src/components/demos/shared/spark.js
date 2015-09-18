@@ -65,12 +65,12 @@ class Spark {
         {
           this.onFrameCallback.call(this);
         }
-      }
 
-      if (!this.points)
-      {
-        throw 'Spark: Please, in manual mode, call next(pos) in the onFrameCallback.';
-      }
+        if (!this.points)
+        {
+          throw 'Spark: Please, in manual mode, call next(pos) in the onFrameCallback.';
+        }
+      }      
 
       this.updateTail();
     }
