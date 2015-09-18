@@ -107,7 +107,7 @@ class DigitalSparkDemo extends DemoBase {
     return <div className="DigitalLines">
         <div className="demo-container">
           {this.getBackButton()}
-          <div className="title">Digital Spark</div>
+          <div className="title">Wire Rush</div>
           <div className="description"></div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/DigitalLines/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Algorithm to Improve Subpath Speed</div>
@@ -118,7 +118,7 @@ class DigitalSparkDemo extends DemoBase {
 }
 
 export default {
-  name: 'Digital Spark',
+  name: 'Wire Rush',
   key: 'digitalSparks',
   author: 'Josh',
   technologies: [],

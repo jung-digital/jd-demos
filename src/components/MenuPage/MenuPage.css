@@ -68,6 +68,10 @@
     font-size: 16px;
   }
 
+  .DemoLink:hover .title {
+    font-size: 22px;
+  }
+
   .DemoLink .content {
     left: 120px;
     top: 16%;

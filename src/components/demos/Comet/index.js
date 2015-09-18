@@ -25,10 +25,11 @@ class CometDemo extends DemoBase {
   }
 
   onMouseMoveHandler(event) {
-    var rect = this.canvas.getBoundingClientRect();
+    var rect = this.canvas.getBoundingClientRect(),
+        scale = WIDTH / this.state.canvasTargetWidth;;
 
-    this.comets.forEach(comet => comet.setDest(new paper.Point(event.clientX - rect.left,
-                                                               event.clientY - rect.top), 10000));
+    this.comets.forEach(comet => comet.setDest(new paper.Point((event.clientX - rect.left) * scale,
+                                                               (event.clientY - rect.top) * scale), 10000));
   };
 
   onMouseOutHandler(event) {

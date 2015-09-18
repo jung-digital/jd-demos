@@ -25,6 +25,7 @@ class SparkDemo extends DemoBase {
 
     this.lastTime = 0;
     this.gravity = new paper.Point(0, 980);
+    this.hue = 0;
 
     this.sparkSource = new paper.Point(WIDTH / 2, HEIGHT / 5);
   }
@@ -36,7 +37,7 @@ class SparkDemo extends DemoBase {
 
     path.strokeColor = spark.options.color.clone();
     path.strokeColor.alpha = ratio;
-    path.strokeWidth = 2 * ratio;
+    path.strokeWidth = spark.options.size * ratio;
     path.strokeCap = 'butt';
   }
 
@@ -54,9 +55,8 @@ class SparkDemo extends DemoBase {
 
     for (var i = 0; i < SPARKS; i++)
       this.sparks.push(new Spark({
-          color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
-          sparkResolution: 8
+          sparkResolution: 6
         }));
 
     paper.view.onFrame = (event) => {
@@ -69,6 +69,8 @@ class SparkDemo extends DemoBase {
       {
         this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
       }
+
+      this.hue += this.elapsed * 20;
 
       this.sparks.forEach(spark => {
         if (!spark.sparking)
@@ -87,10 +89,13 @@ class SparkDemo extends DemoBase {
   };
 
   startSpark(spark) {
-    var ranAngle = (Math.random() * 3) - 1.5 - (Math.PI / 2);
+    var ranAngle = (Math.random() * 3) - 1.5 - (Math.PI / 2),
+        rgb = util.hsvToRgb(this.hue, 1, 0.8);
 
     spark.spark({
       type: 2,
+      size: (Math.random() * 3) + 1,
+      color: new paper.Color(rgb.r, rgb.g, rgb.b, 1),
       position: this.sparkSource,
       velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 400 + 100)
     });
@@ -109,9 +114,19 @@ class SparkDemo extends DemoBase {
   }
 
   onMouseMoveHandler(event) {
-    var rect = this.canvas.getBoundingClientRect();
+    var rect = this.canvas.getBoundingClientRect(),
+        scale = WIDTH / this.state.canvasTargetWidth;
 
-    this.sparkSource = new paper.Point(event.clientX - rect.left, event.clientY - rect.top);
+    this.sparkSource = new paper.Point((event.clientX - rect.left) * scale, (event.clientY - rect.top) * scale);
+  }
+
+  onTouchMoveHandler(event) {
+    event.preventDefault();
+
+    var rect = this.canvas.getBoundingClientRect(),
+        scale = WIDTH / this.state.canvasTargetWidth;
+
+    this.sparkSource = new paper.Point((event.touches[0].clientX - rect.left) * scale, (event.touches[0].clientY - rect.top) * scale);
   }
 
   render() {
@@ -119,7 +134,7 @@ class SparkDemo extends DemoBase {
         <div className="demo-container">
           {this.getBackButton()}
           <div className="title">Spark</div>
-          <div className="description"></div>
+          <div className="description">Move your mouse around to change the source of the sparks.</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Sparks/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Gravity</div>
           {this.getCanvasContainer(WIDTH, HEIGHT, 'sparkCanvas')}
@@ -133,7 +148,7 @@ export default {
   key: 'sparks',
   author: 'Josh',
   technologies: [],
-  image: 'digitalspark.png',
+  image: 'sparks.png',
   description: 'Spark particle effect, customizable to any physics engine',
   component: SparkDemo
 };
