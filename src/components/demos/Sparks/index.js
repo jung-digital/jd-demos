@@ -7,11 +7,12 @@ import withStyles from '../../../decorators/withStyles';
 import util from '../shared/util/util';
 import Dispatcher from '../../../core/Dispatcher';
 import DemoBase from '../DemoBase';
+import Wind from '../shared/wind';
 
 /*============================================
  * Constants
  *============================================*/
-const SPARKS = 60,
+const SPARKS = 40,
       WIDTH = 800,             // Width of canvas
       HEIGHT = 600;            // Height of canvas
 
@@ -23,11 +24,29 @@ class SparkDemo extends DemoBase {
   constructor(props) {
     super(props);
 
+    this.state = {
+      wind: false,
+      gravity: true
+    };
+
     this.lastTime = 0;
-    this.gravity = new paper.Point(0, 980);
+    this.gravity = new paper.Point(0, 200);
     this.hue = 0;
 
     this.sparkSource = new paper.Point(WIDTH / 2, HEIGHT / 5);
+
+    this.wind = new Wind({
+      currentCount: 20,
+      generalWindAngle: -Math.PI / 2,
+      maxWindAngleDeviation: Math.PI/4,
+      maxWindStrength: 800,
+      minWindStrength: 200,
+      viewWidth: WIDTH,
+      viewHeight: HEIGHT,
+      minRadius: 100,
+      maxRadius: 900,
+      wrap: true
+    });
   }
 
   pathRedraw(spark, path, ratio) {
@@ -56,7 +75,7 @@ class SparkDemo extends DemoBase {
     for (var i = 0; i < SPARKS; i++)
       this.sparks.push(new Spark({
           pathRedraw: this.pathRedraw,
-          sparkResolution: 6
+          sparkResolution: 4
         }));
 
     paper.view.onFrame = (event) => {
@@ -68,6 +87,11 @@ class SparkDemo extends DemoBase {
       else
       {
         this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
+      }
+
+      if (this.state.wind)
+      {
+        this.wind.onFrame(this.elapsed);
       }
 
       this.hue += this.elapsed * 20;
@@ -89,25 +113,35 @@ class SparkDemo extends DemoBase {
   };
 
   startSpark(spark) {
-    var ranAngle = (Math.random() * 3) - 1.5 - (Math.PI / 2),
+    var ranAngle = (Math.random() * 2) - 1 - (Math.PI / 2),
         rgb = util.hsvToRgb(this.hue, 1, 0.8);
 
     spark.spark({
       type: 2,
-      size: (Math.random() * 3) + 1,
+      size: (Math.random() * 2) + 1,
       color: new paper.Color(rgb.r, rgb.g, rgb.b, 1),
       position: this.sparkSource,
-      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 400 + 100)
+      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 100 + 20)
     });
   }
 
   // 'this' will be the Spark object itself.
   sparkOnFrame(demo) {
-    this.options.velocity = this.options.velocity.add(demo.gravity.multiply(demo.elapsed));
+    if (demo.state.gravity)
+    {
+      this.options.velocity = this.options.velocity.add(demo.gravity.multiply(demo.elapsed));
+    }
+
+    if (demo.state.wind)
+    {
+      var windForce = demo.wind.getForceAt(this.position).multiply(demo.elapsed);
+      this.options.velocity = this.options.velocity.add(windForce);
+    }
+
     var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
     this.next(nextPos);
 
-    if (nextPos.y > HEIGHT + 50)
+    if (nextPos.y > HEIGHT + 50 || nextPos.x < -50 || nextPos.y < -50 || nextPos.x > WIDTH + 50)
     {
       this.reset();
     }
@@ -129,6 +163,14 @@ class SparkDemo extends DemoBase {
     this.sparkSource = new paper.Point((event.touches[0].clientX - rect.left) * scale, (event.touches[0].clientY - rect.top) * scale);
   }
 
+  windChangeHandler(event) {
+    this.setState({wind: event.target.checked});
+  }
+
+  gravityChangeHandler(event) {
+    this.setState({gravity: event.target.checked});
+  }
+
   render() {
     return <div className="Spark">
         <div className="demo-container">
@@ -137,6 +179,10 @@ class SparkDemo extends DemoBase {
           <div className="description">Move your mouse around to change the source of the sparks.</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Sparks/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Gravity</div>
+          <div className="controls">
+            Wind: <input type="checkbox" checked={this.state.wind} onChange={this.windChangeHandler.bind(this)} />
+            Gravity: <input type="checkbox" checked={this.state.gravity} onChange={this.gravityChangeHandler.bind(this)} />
+          </div>
           {this.getCanvasContainer(WIDTH, HEIGHT, 'sparkCanvas')}
         </div>
       </div>;

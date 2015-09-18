@@ -9,7 +9,7 @@ const TYPE_FOLLOW = 1, // Follow a Paper.js Path object at a particular velocity
 class Spark {
 
   reset() {
-    this.paths.forEach(p => p.remove());
+    this.paths.forEach(p => p.removeSegments(0));
     this.sparking = false;
   }
   spark(options) {
@@ -77,8 +77,7 @@ class Spark {
   }
 
   updateTail() {
-    this.paths.forEach(p => p.remove());
-    this.paths = [];
+    this.paths.forEach(p => p.removeSegments(0));
 
     if (this.type === TYPE_FOLLOW)
     {
@@ -104,7 +103,7 @@ class Spark {
       }
 
       if (nextPath)
-        nextPath.remove();
+        nextPath.removeSegments(0);
     }
     else if (this.type === TYPE_MANUAL)
     {

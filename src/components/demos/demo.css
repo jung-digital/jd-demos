@@ -53,6 +53,10 @@
   cursor: pointer;
 }
 
+.controls {
+  margin: 25px;
+}
+
 @media screen and (max-width: 768px) {
   .canvas-container {
     margin: 25px 0px;

@@ -166,3 +166,9 @@ textarea {
     page-break-after: avoid;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .github {
+    display: none;
+  }
+}
