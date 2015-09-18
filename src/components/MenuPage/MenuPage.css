@@ -74,15 +74,16 @@
   }
 
   .DemoLink .content * {
-    line-height: 30px;
+    line-height: 20px;
   }
 
   .title {
     font-size: 22px;
+    margin-bottom:10px;
   }
 
   .description {
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .DemoLink .image {

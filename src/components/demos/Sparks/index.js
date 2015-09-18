@@ -21,8 +21,6 @@ const SPARKS = 100,
 @withStyles(demoStyles)
 class SparkDemo extends DemoBase {
   pathRedraw(spark, path, ratio) {
-    ratio = (1.0 - (Math.abs(ratio - 0.5) * 2)) * 0.5;
-
     paper.project.activeLayer.addChild(path);
 
     path.strokeColor = spark.options.color.clone();
@@ -32,29 +30,50 @@ class SparkDemo extends DemoBase {
   }
 
   componentDidMount() {
-    // Get a reference to the canvas object
+    super.componentDidMount();
+
     var canvas = document.getElementById('sparkCanvas');
 
-    this.sparks = [];
-
-    // Create an empty project and a view for the canvas:
     paper.setup(canvas);
+
+    this.background = new paper.Path.Rectangle(paper.view.bounds);
+    this.background.fillColor = new paper.Color(0,0,0);
+
+    this.sparks = [];
 
     for (var i = 0; i < SPARKS; i++)
       this.sparks.push(new Spark({
           color: new paper.Color(Math.random(), Math.random(), Math.random(), 1),
           pathRedraw: this.pathRedraw,
-          sparkLength: Math.random() * 500 + 300,
           sparkResolution: 10
         }));
 
     paper.view.onFrame = (event) => {
-      this.onFrame(event);
-      this.sparks.forEach(s => s.onFrame(event));
+      this.sparks.forEach(spark => {
+        if (!spark.sparking)
+        {
+          this.startSpark(spark);
+        }
+        
+        spark.onFrame(event);
+      });
 
       paper.view.draw();
     }
   };
+
+  startSpark(spark) {
+    spark.spark({
+      type: 2,
+      onFrameCallback: this.sparkOnFrame,
+      position: new paper.Point(WIDTH / 2, HEIGHT / 2)
+    });
+  }
+
+  // 'this' will be the Spark object itself.
+  sparkOnFrame() {
+    this.next(new paper.Point(Math.random() * 800, Math.random() * 600));
+  }
 
   render() {
 
@@ -65,9 +84,7 @@ class SparkDemo extends DemoBase {
           <div className="description"></div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Sparks/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Gravity</div>
-          <div className="canvas-container">
-            <canvas className="demo-canvas" style={{width:WIDTH, height:HEIGHT}} id="sparkCanvas" />
-          </div>
+          {this.getCanvasContainer(WIDTH, HEIGHT, 'sparkCanvas')}
         </div>
       </div>;
   }
