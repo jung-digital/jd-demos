@@ -18,7 +18,7 @@ const WIRES = 50,               // Total wires to generate for sparks to run alo
       SPARK_VEL = 1000,          // Velocity of each spark
       SPARK_PROB_SECOND = 0.3, // Probability of a spark per second
       WIDTH = 800,             // Width of canvas
-      HEIGHT = 600;            // Height of canvas
+      HEIGHT = 800 / 1.61;            // Height of canvas
 
 /*============================================
  * The actual demo JSX component

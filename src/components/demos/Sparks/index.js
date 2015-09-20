@@ -14,7 +14,7 @@ import Wind from '../shared/wind';
  *============================================*/
 const SPARKS = 40,
       WIDTH = 800,             // Width of canvas
-      HEIGHT = 600;            // Height of canvas
+      HEIGHT = 800 / 1.61;     // Height of canvas
 
 /*============================================
  * The demo JSX component
