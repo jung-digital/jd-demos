@@ -9,9 +9,19 @@ const TYPE_FOLLOW = 1, // Follow a Paper.js Path object at a particular velocity
 class Spark {
 
   reset() {
-    this.paths.forEach(p => p.removeSegments(0));
+    if (this.type == TYPE_MANUAL)
+    {
+      this.paths.forEach(p => p.removeSegments());
+    }
+    else
+    {
+      this.paths.forEach(p => p.remove());
+      this.paths = [];
+    }
+
     this.sparking = false;
   }
+
   spark(options) {
     if (this.sparking) return;
 
@@ -77,10 +87,11 @@ class Spark {
   }
 
   updateTail() {
-    this.paths.forEach(p => p.removeSegments(0));
-
     if (this.type === TYPE_FOLLOW)
     {
+      this.paths.forEach(p => p.remove());
+      this.paths = [];
+
       var nextPath = this.followPath.clone(),
           ratio = 1 / this.sparkResolution,
           offset = ratio * this.sparkLength;
@@ -103,10 +114,12 @@ class Spark {
       }
 
       if (nextPath)
-        nextPath.removeSegments(0);
+        nextPath.remove();
     }
     else if (this.type === TYPE_MANUAL)
     {
+      this.paths.forEach(p => p.removeSegments(0));
+
       // Go backwards from the end, building up paths and letting the dev manually style them
       // ensuring that there are this.resolution # of paths.
       if (this.points.length > 1)
