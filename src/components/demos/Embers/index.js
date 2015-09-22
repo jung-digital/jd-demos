@@ -94,7 +94,7 @@ class EmberDemo extends DemoBase {
         this.wind.onFrame(this.elapsed);
       }
 
-      this.hue = Math.random()*60;
+      this.hue = Math.random()*Math.random()*60;
 
       this.sparks.forEach(spark => {
         if (!spark.sparking)
