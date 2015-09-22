@@ -26,7 +26,7 @@ class EmberDemo extends DemoBase {
 
     this.state = {
       wind: false,
-      gravity: true
+      gravity: false
     };
 
     this.lastTime = 0;
@@ -94,7 +94,7 @@ class EmberDemo extends DemoBase {
         this.wind.onFrame(this.elapsed);
       }
 
-      this.hue += this.elapsed * 20;
+      this.hue = Math.random()*60; //(this.elapsed * 20);
 
       this.sparks.forEach(spark => {
         if (!spark.sparking)
@@ -113,7 +113,7 @@ class EmberDemo extends DemoBase {
   };
 
   startSpark(spark) {
-    var ranAngle = (Math.random() * 2) - 1 - (Math.PI / 2),
+    var ranAngle = Math.random() - .5 - (Math.PI / 2) ,
         rgb = util.hsvToRgb(this.hue, 1, 0.8);
 
     spark.spark({
@@ -137,6 +137,8 @@ class EmberDemo extends DemoBase {
       var windForce = demo.wind.getForceAt(this.position).multiply(demo.elapsed);
       this.options.velocity = this.options.velocity.add(windForce);
     }
+
+
 
     var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
     this.next(nextPos);
