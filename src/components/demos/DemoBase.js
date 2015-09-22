@@ -1,14 +1,19 @@
 import Dispatcher from '../../core/Dispatcher';
 import ActionTypes from '../../constants/ActionTypes';
 import React, { PropTypes } from 'react';
+import Const from './shared/const';
 
 class DemoBase extends React.Component {
   constructor(props) {
     super(props);
 
+    this.lastTime = 0;
+
     this.state = {
-      canvasTargetWidth: 800,
-      canvasTargetHeight: 800 / 1.618
+      canvasTargetWidth: Const.WIDTH,
+      canvasTargetHeight: Const.HEIGHT,
+      WIDTH: Const.WIDTH,
+      HEIGHT: Const.HEIGHT
     }
   }
 
@@ -72,6 +77,18 @@ class DemoBase extends React.Component {
     console.log('DemoBase: componentDidMount()');
     window.addEventListener('resize', this.resizeHandler.bind(this));
     this.resizeHandler(null);
+  }
+
+  onFrame() {
+    if (!this.lastTime)
+    {
+      this.lastTime = new Date().getTime();
+      this.elapsed = 0.01;
+    }
+    else
+    {
+      this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
+    }
   }
 }
 

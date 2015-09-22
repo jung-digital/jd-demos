@@ -1,11 +1,13 @@
 import DigitalSparks from './DigitalSparks/index.js';
 import Comet from './Comet/index.js';
 import Sparks from './Sparks/index.js';
+import Fireworks from './FireworkGL/index.js';
 
 const all = [
         Comet,
         DigitalSparks,
-        Sparks
+        Sparks,
+        Fireworks
       ],
       demosByKey = {};
 

@@ -2,7 +2,10 @@
 
 // Import Paper.js Once
 import paper from '../node_modules/paper/dist/paper-full.js';
+import PIXI from '../bower_components/pixi.js/bin/pixi.js';
+
 window.paper = paper;
+window.PIXI = PIXI;
 
 // Import everything else that uses ES6
 import 'babel/polyfill';
@@ -14,6 +17,15 @@ import Location from './core/Location';
 import ActionTypes from './constants/ActionTypes';
 
 let curPath = '/';
+
+// requestAnimationFrame polyfill
+(function() {
+var  w=window,    foundRequestAnimationFrame  =    w.requestAnimationFrame ||
+                   w.webkitRequestAnimationFrame || w.msRequestAnimationFrame ||
+                   w.mozRequestAnimationFrame    || w.oRequestAnimationFrame  ||
+                            function(cb) { setTimeout(cb,1000/60); } ;
+window.requestAnimFrame  = foundRequestAnimationFrame ;
+}());
 
 const pathHistory = [],
       container = document.getElementById('app'),
