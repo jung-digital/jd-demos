@@ -200,7 +200,7 @@ export default {
   key: 'embers',
   author: 'Thomas',
   technologies: [],
-  image: 'sparks.png',
+  image: 'under-construction.svg',
   description: 'Ember particle effect, customizable to any physics engine',
   component: EmberDemo
 };

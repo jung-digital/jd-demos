@@ -158,14 +158,10 @@ class FireworkGL extends DemoBase {
     return <div className="Spark">
         <div className="demo-container">
           {this.getBackButton()}
-          <div className="title">Spark</div>
-          <div className="description">Move your mouse around to change the source of the sparks.</div>
+          <div className="title">Fireworks</div>
+          <div className="description">Under Construction</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Sparks/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js, Gravity</div>
-          <div className="controls">
-            Wind: <input type="checkbox" checked={this.state.wind} onChange={this.windChangeHandler.bind(this)} />
-            Gravity: <input type="checkbox" checked={this.state.gravity} onChange={this.gravityChangeHandler.bind(this)} />
-          </div>
           {this.getCanvasContainer(this.state.WIDTH, this.state.HEIGHT, 'fireworkCanvas')}
         </div>
       </div>;
@@ -177,7 +173,7 @@ export default {
   key: 'fireworks',
   author: 'Josh',
   technologies: [],
-  image: 'sparks.png',
-  description: 'temp',
+  image: 'under-construction.svg',
+  description: 'Under Construction.',
   component: FireworkGL
 };
