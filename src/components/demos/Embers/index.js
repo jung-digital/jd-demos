@@ -94,7 +94,7 @@ class EmberDemo extends DemoBase {
         this.wind.onFrame(this.elapsed);
       }
 
-      this.hue = Math.random()*60; //(this.elapsed * 20);
+      this.hue = Math.random()*60;
 
       this.sparks.forEach(spark => {
         if (!spark.sparking)
@@ -121,7 +121,9 @@ class EmberDemo extends DemoBase {
       size: (Math.random() * 2) + 1,
       color: new paper.Color(rgb.r, rgb.g, rgb.b, 1),
       position: this.sparkSource,
-      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 100 + 20)
+      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 150 + 20),
+      heatCurrent: 0,
+      life: (Math.random() * 4 + 2)
     });
   }
 
@@ -138,12 +140,14 @@ class EmberDemo extends DemoBase {
       this.options.velocity = this.options.velocity.add(windForce);
     }
 
-
+    this.velocity.angle += (Math.random() * 20) - 10;
+    this.options.heatCurrent += (Math.random());
+    this.options.life -= demo.elapsed;
 
     var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
     this.next(nextPos);
 
-    if (nextPos.y > HEIGHT + 50 || nextPos.x < -50 || nextPos.y < -50 || nextPos.x > WIDTH + 50)
+    if (this.options.life < 0 || nextPos.y > HEIGHT + 50 || nextPos.x < -50 || nextPos.y < -50 || nextPos.x > WIDTH + 50)
     {
       this.reset();
     }
