@@ -3,8 +3,7 @@
  * move along a provided path.
  *============================================*/
 
-const TYPE_FOLLOW = 1, // Follow a Paper.js Path object at a particular velocity.
-      TYPE_MANUAL = 2; // Let the developer decide via a onFrame callback.
+const TYPE_MANUAL = 2; // Let the developer decide via a onFrame callback.
 
 class Spark {
 
@@ -33,7 +32,6 @@ class Spark {
     // TODO do not duplicate variable names, reference via 'this.options.blah'
     this.type = options.type || 1;
     this.onFrameCallback = options.onFrameCallback;
-    this.followPath = options.followPath;
     this.velocity = options.velocity;
 
     this.sparking = true;
@@ -59,17 +57,7 @@ class Spark {
   onFrame(event) {
     if (this.sparking)
     {
-      if (this.type === TYPE_FOLLOW)
-      {
-        this.position += this.velocity * event.delta;
-
-        if (this.position - this.sparkLength > this.followPath.length)
-        {
-          this.sparking = false;
-          return;
-        }
-      }
-      else if (this.type === TYPE_MANUAL)
+      if (this.type === TYPE_MANUAL)
       {
         if (this.onFrameCallback)
         {
@@ -87,36 +75,7 @@ class Spark {
   }
 
   updateTail() {
-    if (this.type === TYPE_FOLLOW)
-    {
-      this.paths.forEach(p => p.remove());
-      this.paths = [];
-
-      var nextPath = this.followPath.clone(),
-          ratio = 1 / this.sparkResolution,
-          offset = ratio * this.sparkLength;
-
-      var pos = this.position - this.sparkLength;
-
-      for (var r = 0; r < this.sparkResolution; r++) {
-        var cur = nextPath;
-
-        if (cur && pos > 0)
-        {
-          nextPath = cur.split(this.paths.length == 0 ? pos : offset);
-
-          this.paths.push(cur);
-
-          this.pathRedraw(this, cur, r / this.sparkResolution);
-        }
-
-        pos += offset;
-      }
-
-      if (nextPath)
-        nextPath.remove();
-    }
-    else if (this.type === TYPE_MANUAL)
+    if (this.type === TYPE_MANUAL)
     {
       this.paths.forEach(p => p.removeSegments(0));
 
