@@ -7,7 +7,6 @@ import withStyles from '../../../decorators/withStyles';
 import util from '../shared/util/util';
 import Dispatcher from '../../../core/Dispatcher';
 import DemoBase from '../DemoBase';
-import Wind from '../shared/wind';
 
 /*============================================
  * Constants
@@ -25,28 +24,13 @@ class EmberDemo extends DemoBase {
     super(props);
 
     this.state = {
-      wind: false,
-      gravity: false
     };
 
     this.lastTime = 0;
-    this.gravity = new paper.Point(0, 200);
     this.hue = 0;
 
     this.sparkSource = new paper.Point(WIDTH / 2, HEIGHT / 5);
 
-    this.wind = new Wind({
-      currentCount: 20,
-      generalWindAngle: -Math.PI / 2,
-      maxWindAngleDeviation: Math.PI/4,
-      maxWindStrength: 800,
-      minWindStrength: 200,
-      viewWidth: WIDTH,
-      viewHeight: HEIGHT,
-      minRadius: 100,
-      maxRadius: 900,
-      wrap: true
-    });
   }
 
   pathRedraw(spark, path, ratio) {
@@ -89,11 +73,6 @@ class EmberDemo extends DemoBase {
         this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
       }
 
-      if (this.state.wind)
-      {
-        this.wind.onFrame(this.elapsed);
-      }
-
       this.hue = Math.random()*Math.random()*60;
 
       this.sparks.forEach(spark => {
@@ -129,16 +108,6 @@ class EmberDemo extends DemoBase {
 
   // 'this' will be the Spark object itself.
   sparkOnFrame(demo) {
-    if (demo.state.gravity)
-    {
-      this.options.velocity = this.options.velocity.add(demo.gravity.multiply(demo.elapsed));
-    }
-
-    if (demo.state.wind)
-    {
-      var windForce = demo.wind.getForceAt(this.position).multiply(demo.elapsed);
-      this.options.velocity = this.options.velocity.add(windForce);
-    }
 
     this.velocity.angle += (Math.random() * 20) - 10;
     this.options.heatCurrent += (Math.random());
@@ -169,14 +138,6 @@ class EmberDemo extends DemoBase {
     this.sparkSource = new paper.Point((event.touches[0].clientX - rect.left) * scale, (event.touches[0].clientY - rect.top) * scale);
   }
 
-  windChangeHandler(event) {
-    this.setState({wind: event.target.checked});
-  }
-
-  gravityChangeHandler(event) {
-    this.setState({gravity: event.target.checked});
-  }
-
   render() {
     return <div className="Spark">
         <div className="demo-container">
@@ -186,8 +147,7 @@ class EmberDemo extends DemoBase {
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Embers/index.js">Source</a></div>
           <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js</div>
           <div className="controls">
-            Wind: <input type="checkbox" checked={this.state.wind} onChange={this.windChangeHandler.bind(this)} />
-            Gravity: <input type="checkbox" checked={this.state.gravity} onChange={this.gravityChangeHandler.bind(this)} />
+            
           </div>
           {this.getCanvasContainer(WIDTH, HEIGHT, 'sparkCanvas')}
         </div>
