@@ -103,7 +103,7 @@ class EmberDemo extends DemoBase {
   // 'this' will be the Spark object itself.
   sparkOnFrame(demo) {
 
-    var angle = (Math.random() * 20) - 10,
+    var angle = (Math.random() * (3.141/6)) - (3.141/12),
         matrix = gl.mat2.create();
     gl.mat2.rotate(matrix, matrix, angle);
     gl.vec2.transformMat2(this.options.velocity, this.options.velocity, matrix);
