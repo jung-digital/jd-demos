@@ -3,21 +3,9 @@
  * move along a provided path.
  *============================================*/
 
-const TYPE_MANUAL = 2; // Let the developer decide via a onFrame callback.
-
 class Spark {
 
   reset() {
-    if (this.type == TYPE_MANUAL)
-    {
-      this.paths.forEach(p => p.removeSegments());
-    }
-    else
-    {
-      this.paths.forEach(p => p.remove());
-      this.paths = [];
-    }
-
     this.sparking = false;
   }
 
@@ -30,14 +18,12 @@ class Spark {
     }
 
     // TODO do not duplicate variable names, reference via 'this.options.blah'
-    this.type = options.type || 1;
     this.onFrameCallback = options.onFrameCallback;
     this.velocity = options.velocity;
 
     this.sparking = true;
-    this.position = this.options.position || 0;          // Head position is 0 to this.followPath.length
+    this.position = this.options.position;
 
-    this.paths = [];
     this.points = this.options.position ? [this.options.position] : undefined;    // Reset points for manual mode
   }
 
@@ -54,52 +40,35 @@ class Spark {
     }
   }
 
-  onFrame(event) {
+  onFrame(elapsed, context) {
     if (this.sparking)
     {
-      if (this.type === TYPE_MANUAL)
+      if (this.onFrameCallback)
       {
-        if (this.onFrameCallback)
-        {
-          this.onFrameCallback.call(this);
-        }
+        this.onFrameCallback.call(this, elapsed, context);
+      }
 
-        if (!this.points)
-        {
-          throw 'Spark: Please, in manual mode, call next(pos) in the onFrameCallback.';
-        }
-      }      
-
-      this.updateTail();
+      this.updateTail(elapsed, context);
     }
   }
 
-  updateTail() {
-    if (this.type === TYPE_MANUAL)
+  updateTail(elapsed, context) {
+    // Go backwards from the end, building up paths and letting the dev manually style them
+    // ensuring that there are this.resolution # of paths.
+    if (this.points.length > 1)
     {
-      this.paths.forEach(p => p.removeSegments(0));
-
-      // Go backwards from the end, building up paths and letting the dev manually style them
-      // ensuring that there are this.resolution # of paths.
-      if (this.points.length > 1)
+      for (var i = 0; i < this.points.length - 1; i++)
       {
-        for (var i = 0; i < this.points.length - 1; i++)
-        {
-          this.paths[i] = this.paths[i] || new paper.Path();
+        var start = this.points[this.points.length - (i+1)],
+            end = this.points[this.points.length - (i+2)];
 
-          var start = this.points[this.points.length - (i+1)],
-              end = this.points[this.points.length - (i+2)];
+        if (!start)
+          throw 'NO START!!';
+        if (!end)
+          throw 'NO END!!';
 
-              if (!start)
-                throw 'NO START!!';
-              if (!end)
-                throw 'NO END!!';
-          this.paths[i].moveTo(start);
-          this.paths[i].lineTo(end);
-
-          // Let dev manually style points based on ratio of start to end
-          this.pathRedraw(this, this.paths[i], i / (this.sparkResolution-1));
-        }
+        // Let dev manually style points based on ratio of start to end
+        this.pathRedraw(this, start, end, i / (this.sparkResolution-1), elapsed, context);
       }
     }
   }

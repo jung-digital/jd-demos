@@ -11,7 +11,7 @@ import DemoBase from '../DemoBase';
 /*============================================
  * Constants
  *============================================*/
-const SPARKS = 40,
+const SPARKS = 500,
       WIDTH = 800,             // Width of canvas
       HEIGHT = 800 / 1.61;     // Height of canvas
 
@@ -23,38 +23,30 @@ class EmberDemo extends DemoBase {
   constructor(props) {
     super(props);
 
-    this.state = {
-    };
-
-    this.lastTime = 0;
     this.hue = 0;
 
-    this.sparkSource = new paper.Point(WIDTH / 2, HEIGHT / 5);
-
+    this.sparkSource = new gl.vec2.fromValues(WIDTH / 2, HEIGHT / 5);
   }
 
-  pathRedraw(spark, path, ratio) {
+  pathRedraw(spark, start, end, ratio, elapsed, context) {
     ratio = 1 - ratio;
 
-    paper.project.activeLayer.addChild(path);
+    context.strokeStyle = 'rgb(' + ~~(spark.options.color.r * 256) + ',' + ~~(spark.options.color.g * 256) + ',' + ~~(spark.options.color.b) * 256 + ')';
+    context.lineWidth = spark.options.size * ratio;
 
-    path.strokeColor = spark.options.color.clone();
-    path.strokeColor.alpha = ratio;
-    path.strokeWidth = spark.options.size * ratio;
-    path.strokeCap = 'butt';
+    context.beginPath();
+    context.moveTo(start[0], start[1]);
+    context.lineTo(end[0], end[1]);
+    context.stroke();
   }
 
   componentDidMount() {
     super.componentDidMount();
 
     this.canvas = document.getElementById('sparkCanvas');
-    // paper.setup(this.canvas);
-    console.log(this.canvas);
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.fillRect(0,0,WIDTH, HEIGHT);
-
-    // this.background = new paper.Path.Rectangle(paper.view.bounds);
-    // this.background.fillColor = new paper.Color(0,0,0);
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     this.sparks = [];
 
@@ -63,40 +55,35 @@ class EmberDemo extends DemoBase {
           pathRedraw: this.pathRedraw,
           sparkResolution: 4
         }));
-
-    this.onFrame = (timestamp) => {
-      // console.log(timestamp);
-      // console.log(new Date().getTime());
-      // if (!this.lastTime)
-      // {
-      //   this.lastTime = new Date().getTime();
-      //   this.elapsed = 0.01;
-      // }
-      // else
-      // {
-      //   this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
-      // }
-      this.elapsed = timestamp / 1000;
-
-      this.hue = Math.random()*Math.random()*60;
-
-      this.sparks.forEach(spark => {
-        if (!spark.sparking)
-        {
-          this.startSpark(spark);
-        }
-
-        this.sparkOnFrame.call(spark, this);
-        spark.onFrame(timestamp);
-      });
-
-      this.lastTime = new Date().getTime();
-
-      //paper.view.draw();
-      window.requestAnimationFrame(this.onFrame);
-    };
-      window.requestAnimationFrame(this.onFrame);
+    
+    window.requestAnimationFrame(this.onFrameFirst.bind(this));
   };
+
+  onFrameFirst(timestamp) {
+    this.lastTime = timestamp;
+    window.requestAnimationFrame(this.onFrame.bind(this));
+  }
+
+  onFrame(timestamp) {
+    this.ctx.clearRect(0,0, this.state.WIDTH, this.state.HEIGHT);
+    this.elapsed = (timestamp - this.lastTime) / 1000;
+    this.lastTime = timestamp;
+
+    this.hue = Math.random() * Math.random() * 60;
+
+    this.sparks.forEach(spark => {
+      if (!spark.sparking)
+      {
+        this.startSpark(spark);
+      }
+
+      this.sparkOnFrame.call(spark, this);
+
+      spark.onFrame(this.elapsed, this.ctx);
+    });
+
+    window.requestAnimationFrame(this.onFrame.bind(this));
+  }
 
   startSpark(spark) {
     var ranAngle = Math.random() - .5 - (Math.PI / 2) ,
@@ -105,9 +92,9 @@ class EmberDemo extends DemoBase {
     spark.spark({
       type: 2,
       size: (Math.random() * 2) + 1,
-      color: new paper.Color(rgb.r, rgb.g, rgb.b, 1),
+      color: rgb,
       position: this.sparkSource,
-      velocity: new paper.Point(Math.cos(ranAngle), Math.sin(ranAngle)).multiply(Math.random() * 150 + 20),
+      velocity: gl.vec2.scale(gl.vec2.create(), gl.vec2.fromValues(Math.cos(ranAngle), Math.sin(ranAngle)), Math.random() * 150 + 20),
       heatCurrent: 0,
       life: (Math.random() * 4 + 2)
     });
@@ -116,11 +103,15 @@ class EmberDemo extends DemoBase {
   // 'this' will be the Spark object itself.
   sparkOnFrame(demo) {
 
-    this.velocity.angle += (Math.random() * 20) - 10;
+    var angle = (Math.random() * 20) - 10,
+        matrix = gl.mat2.create();
+    gl.mat2.rotate(matrix, matrix, angle);
+    gl.vec2.transformMat2(this.options.velocity, this.options.velocity, matrix);
+
     this.options.heatCurrent += (Math.random());
     this.options.life -= demo.elapsed;
 
-    var nextPos = this.options.velocity.multiply(demo.elapsed).add(this.position);
+    var nextPos = gl.vec2.scaleAndAdd(gl.vec2.create(), this.position, this.options.velocity, demo.elapsed);
     this.next(nextPos);
 
     if (this.options.life < 0 || nextPos.y > HEIGHT + 50 || nextPos.x < -50 || nextPos.y < -50 || nextPos.x > WIDTH + 50)
@@ -133,7 +124,7 @@ class EmberDemo extends DemoBase {
     var rect = this.canvas.getBoundingClientRect(),
         scale = WIDTH / this.state.canvasTargetWidth;
 
-    this.sparkSource = new paper.Point((event.clientX - rect.left) * scale, (event.clientY - rect.top) * scale);
+    this.sparkSource = gl.vec2.fromValues((event.clientX - rect.left) * scale, (event.clientY - rect.top) * scale);
   }
 
   onTouchMoveHandler(event) {
@@ -142,7 +133,7 @@ class EmberDemo extends DemoBase {
     var rect = this.canvas.getBoundingClientRect(),
         scale = WIDTH / this.state.canvasTargetWidth;
 
-    this.sparkSource = new paper.Point((event.touches[0].clientX - rect.left) * scale, (event.touches[0].clientY - rect.top) * scale);
+    this.sparkSource = gl.vec2.fromValues((event.touches[0].clientX - rect.left) * scale, (event.touches[0].clientY - rect.top) * scale);
   }
 
   render() {
