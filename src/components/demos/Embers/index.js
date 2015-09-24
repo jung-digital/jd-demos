@@ -1,7 +1,7 @@
 /*! React Starter Kit | MIT License | http://www.reactstarterkit.com/ */
 
 import React, { PropTypes } from 'react';
-import Spark from '../shared/spark';
+import Spark from '../shared/spark_raw';
 import demoStyles from '../demo.css';
 import withStyles from '../../../decorators/withStyles';
 import util from '../shared/util/util';
@@ -48,11 +48,13 @@ class EmberDemo extends DemoBase {
     super.componentDidMount();
 
     this.canvas = document.getElementById('sparkCanvas');
+    // paper.setup(this.canvas);
+    console.log(this.canvas);
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.fillRect(0,0,WIDTH, HEIGHT);
 
-    paper.setup(this.canvas);
-
-    this.background = new paper.Path.Rectangle(paper.view.bounds);
-    this.background.fillColor = new paper.Color(0,0,0);
+    // this.background = new paper.Path.Rectangle(paper.view.bounds);
+    // this.background.fillColor = new paper.Color(0,0,0);
 
     this.sparks = [];
 
@@ -62,16 +64,19 @@ class EmberDemo extends DemoBase {
           sparkResolution: 4
         }));
 
-    paper.view.onFrame = (event) => {
-      if (!this.lastTime)
-      {
-        this.lastTime = new Date().getTime();
-        this.elapsed = 0.01;
-      }
-      else
-      {
-        this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
-      }
+    this.onFrame = (timestamp) => {
+      // console.log(timestamp);
+      // console.log(new Date().getTime());
+      // if (!this.lastTime)
+      // {
+      //   this.lastTime = new Date().getTime();
+      //   this.elapsed = 0.01;
+      // }
+      // else
+      // {
+      //   this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
+      // }
+      this.elapsed = timestamp / 1000;
 
       this.hue = Math.random()*Math.random()*60;
 
@@ -82,13 +87,15 @@ class EmberDemo extends DemoBase {
         }
 
         this.sparkOnFrame.call(spark, this);
-        spark.onFrame(event);
+        spark.onFrame(timestamp);
       });
 
       this.lastTime = new Date().getTime();
 
-      paper.view.draw();
-    }
+      //paper.view.draw();
+      window.requestAnimationFrame(this.onFrame);
+    };
+      window.requestAnimationFrame(this.onFrame);
   };
 
   startSpark(spark) {
