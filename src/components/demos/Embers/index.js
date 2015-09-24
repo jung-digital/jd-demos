@@ -11,9 +11,11 @@ import DemoBase from '../DemoBase';
 /*============================================
  * Constants
  *============================================*/
-const SPARKS = 500,
-      WIDTH = 800,             // Width of canvas
-      HEIGHT = 800 / 1.61;     // Height of canvas
+const SPARKS = 500,               // Maximum number of sparks to display simulataneously
+      WIDTH = 800,                // Width of canvas
+      HEIGHT = 800 / 1.61,        // Height of canvas,
+      SPARK_SOURCE_RADIUS = 50,   // Spark source radius in pixels
+      CHANGE_DIR_TIME_MAX = 5000; // The maximum time to wait between changing directions   
 
 /*============================================
  * The demo JSX component
@@ -31,7 +33,7 @@ class EmberDemo extends DemoBase {
   pathRedraw(spark, start, end, ratio, elapsed, context) {
     ratio = 1 - ratio;
 
-    context.strokeStyle = 'rgb(' + ~~(spark.options.color.r * 256) + ',' + ~~(spark.options.color.g * 256) + ',' + ~~(spark.options.color.b) * 256 + ')';
+    context.strokeStyle = 'rgba(' + ~~(spark.options.color.r * 256) + ',' + ~~(spark.options.color.g * 256) + ',' + ~~(spark.options.color.b) * 256 +',' + ratio + ')';
     context.lineWidth = spark.options.size * ratio;
 
     context.beginPath();
@@ -86,27 +88,35 @@ class EmberDemo extends DemoBase {
   }
 
   startSpark(spark) {
-    var ranAngle = Math.random() - .5 - (Math.PI / 2) ,
+    var velAngle = Math.random() - .5 - (Math.PI / 2),
+        sourceAngle = Math.random() * Math.PI * 2,
+        sourceDistance = Math.random() * SPARK_SOURCE_RADIUS,
         rgb = util.hsvToRgb(this.hue, 1, 0.8);
 
     spark.spark({
       type: 2,
       size: (Math.random() * 2) + 1,
       color: rgb,
-      position: this.sparkSource,
-      velocity: gl.vec2.scale(gl.vec2.create(), gl.vec2.fromValues(Math.cos(ranAngle), Math.sin(ranAngle)), Math.random() * 150 + 20),
+      position: gl.vec2.add(gl.vec2.create(), this.sparkSource, gl.vec2.fromValues(Math.cos(sourceAngle) * sourceDistance, Math.sin(sourceAngle) * sourceDistance)),
+      velocity: gl.vec2.scale(gl.vec2.create(), gl.vec2.fromValues(Math.cos(velAngle), Math.sin(velAngle)), Math.random() * 150 + 20),
       heatCurrent: 0,
+      lastAngleChangeTime: 0,
       life: (Math.random() * 4 + 2)
     });
   }
 
   // 'this' will be the Spark object itself.
   sparkOnFrame(demo) {
+    var ran = (Math.random() * CHANGE_DIR_TIME_MAX) + (demo.lastTime - this.options.lastAngleChangeTime);
 
-    var angle = (Math.random() * (3.141/6)) - (3.141/12),
-        matrix = gl.mat2.create();
-    gl.mat2.rotate(matrix, matrix, angle);
-    gl.vec2.transformMat2(this.options.velocity, this.options.velocity, matrix);
+    if (ran > CHANGE_DIR_TIME_MAX)
+    {
+      var angle = (Math.random() * (3.141/3)) - (3.141/6),
+      matrix = gl.mat2.create();
+      gl.mat2.rotate(matrix, matrix, angle);
+      gl.vec2.transformMat2(this.options.velocity, this.options.velocity, matrix);
+      this.options.lastAngleChangeTime = demo.lastTime;
+    }
 
     this.options.heatCurrent += (Math.random());
     this.options.life -= demo.elapsed;
