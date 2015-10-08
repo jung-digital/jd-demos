@@ -1,11 +1,3 @@
-/*
- * React.js Starter Kit
- * Copyright (c) Konstantin Tarkus (@koistya), KriaSoft LLC
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.txt file in the root directory of this source tree.
- */
-
 import path from 'path';
 import cp from 'child_process';
 import gulp from 'gulp';
@@ -28,9 +20,7 @@ gulp.task('default', ['sync']);
 
 // Clean output directory
 gulp.task('clean', cb => {
-  del(['.tmp', 'build/*', '!build/.git'], {dot: true}, () => {
-    mkdirp('build/public', cb);
-  });
+  del(['.tmp', 'build/*', '!build/.git'], {dot: true}, mkdirp.bind(undefined, 'build/public', cb));
 });
 
 // Static files

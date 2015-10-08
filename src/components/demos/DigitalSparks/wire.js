@@ -35,16 +35,17 @@ class Wire {
       ecircle.fillColor = 'red';
     }
 
-    var loops = 0;
-    while (!cur.equals(end) && loops++ < 100)
+    while (true)
     {
       // Generate a direction for the wire to go, giving preference to directions toward the end
       // and ensuring the same direction is never repeated twice in a row
-      var dirs = [1,2,3,4],
-          sidesToward = util.toward(cur, end); // All directions that get us closer to destination.
+      var dirs = [1,2,3,4];
+      var sidesToward = util.toward(cur, end); // All directions that get us closer to destination.
 
       sidesToward.forEach(s => dirs.push(s, s, s, s));   // Duplicate the sides that move toward the destination
-      dirs = dirs.filter(d => d != lastDir && d != util.reverseOf(lastDir));    // Filter out the last direction used so we don't do it twice.
+      dirs = dirs.filter(d => {
+        return d != lastDir && d != util.reverseOf(lastDir);
+      });    // Filter out the last direction used so we don't do it twice.
 
       this.points.push(cur);
 
@@ -62,17 +63,17 @@ class Wire {
           cur = cur.add(new paper.Point(0, end.y - cur.y));
           this.points.push(cur);
         }
-        // At this point cur and end should be the same so we will satisfy our while condition.
-        if (!cur.equals(end))
-          throw Error('WHOOPS SHIT IS SCREWED UP YO');
+        break;
       }
       else {
         var dir;
+        var moveDis;
+        var dirVec;
 
         do {
-          var moveDis = Math.round(util.ran(detail / 2, detail));
+          moveDis = Math.round(util.ran(detail / 2, detail));
           dir = util.ranItem(dirs);
-          var dirVec = util.vecFor(dir).multiply(moveDis); // ???
+          dirVec = util.vecFor(dir).multiply(moveDis);
 
           next = cur.add(dirVec);
         } while (!this.isInBounds(next));
@@ -98,7 +99,7 @@ class Wire {
   constructor(options) {
     options = options || {};
 
-    this.detail = options.detail || 150;
+    this.detail = options.detail || 180;
 
     this.type = options.type === undefined ? 1 : options.type;
     this.bounds = options.bounds; // Paper.js View object

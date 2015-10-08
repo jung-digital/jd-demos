@@ -151,12 +151,10 @@ class EmberDemo extends DemoBase {
         <div className="demo-container">
           {this.getBackButton()}
           <div className="title">Ember</div>
-          <div className="description">Move your mouse around to change the source of the sparks.</div>
+          <div className="description">Move your mouse around to change the source of the burning embers.</div>
           <div className="source"><a target="_blank" href="https://github.com/jung-digital/jd-demos/blob/master/src/components/demos/Embers/index.js">Source</a></div>
-          <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, Paper.js, React.js</div>
-          <div className="controls">
-            
-          </div>
+          <div className="technologies">Uses: React Starter Kit, EcmaScript 7, WebPack, React.js, native Canvas</div>
+          <div className="controls"></div>
           {this.getCanvasContainer(WIDTH, HEIGHT, 'sparkCanvas')}
         </div>
       </div>;
