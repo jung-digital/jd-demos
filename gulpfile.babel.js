@@ -36,6 +36,7 @@ gulp.task('assets', () => {
 gulp.task('resources', () => {
   src.resources = [
     'package.json',
+    '.env',
     'src/content*/**',
     'src/templates*/**'
   ];
