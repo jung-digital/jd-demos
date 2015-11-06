@@ -16,21 +16,31 @@
   font-weight: bold;
   font-size: 28px;
   margin:25px;
-  border: 2px solid #efefef;
-  box-shadow: 2px 2px 2px #efefef;
+
+  border-top-right-radius:1em;
 
   transition: background-color 0.2s ease;
+
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f29c41+0,ffa544+25,cc8137+100&amp;1+0,0+59 */
+  background: -moz-linear-gradient(top,  rgba(242,156,65,1) 0%, rgba(255,165,68,0.58) 25%, rgba(232,149,62,0) 59%, rgba(204,129,55,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(242,156,65,1)), color-stop(25%,rgba(255,165,68,0.58)), color-stop(59%,rgba(232,149,62,0)), color-stop(100%,rgba(204,129,55,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(242,156,65,1) 0%,rgba(255,165,68,0.58) 25%,rgba(232,149,62,0) 59%,rgba(204,129,55,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(242,156,65,1) 0%,rgba(255,165,68,0.58) 25%,rgba(232,149,62,0) 59%,rgba(204,129,55,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(242,156,65,1) 0%,rgba(255,165,68,0.58) 25%,rgba(232,149,62,0) 59%,rgba(204,129,55,0) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(242,156,65,1) 0%,rgba(255,165,68,0.58) 25%,rgba(232,149,62,0) 59%,rgba(204,129,55,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f29c41', endColorstr='#00cc8137',GradientType=0 ); /* IE6-9 */
 }
 
 .DemoLink .image {
-  width: 256px;
-  height: 256px;
+  width: 150px;
+  height: 150px;
+  border: 5px solid rgba(242,156,65,1);
 }
 
 .DemoLink .content {
   position: absolute;
-  left: 300px;
-  top: 30%;
+  left: 200px;
+  top: 20%;
   width: 75%;
 }
 

@@ -38,7 +38,6 @@ class FireworksDemo extends DemoBase {
 
   jungleLoadedHandler() {
     this.renderer = new Jungle.GraphicRenderer(this.canvas, {
-      debug: true,
       mouseEnabled: true,
       resizeToCanvas: true
     });
