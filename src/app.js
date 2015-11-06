@@ -65,8 +65,10 @@ new Promise(resolve => {
 }).then(() => FastClick.attach(document.body)).then(run);
 
 function run() {
+  window.location.hash = window.location.hash.length ? window.location.hash : '#/';
+
   router.dispatch({
-    path: window.location.pathname,
+    path: window.location.hash.slice(1),
     context
   }, (state, component) => {
     ReactDOM.render(component, container, () => {
@@ -95,6 +97,7 @@ function run() {
     }
 
     function goWestYoungMan(action) {
+      window.location.hash = '#' + action.path;
       router.dispatch({
         path: action.path,
         context
@@ -108,9 +111,5 @@ function run() {
 function handlePopState(event) {
   Dispatcher.dispatch({
     type: ActionTypes.BACK_LOCATION
-  });
-
-  Location.navigateTo(window.location.pathname, {
-    replace: !!event.state
   });
 }

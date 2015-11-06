@@ -5,7 +5,7 @@ class Comet {
 
   setDest(point, mass) {
     this.dest = point;
-    this.destMass = mass;
+    this.destMass = mass || 10000;
   }
 
   wrap() {
@@ -108,6 +108,7 @@ class Comet {
     this.vel = vel;                 // Paper.js Point of the velocity
     this.resolution = resolution;   // Tail length in line segments
     this.mass = mass;               // Mass in world units
+    this.destMass = 10000;
 
     this.hist = [];                 // History of all points this comet has visited up to this.resolution
     this.paths = [];                // Paper.js Paths of this comet for each segment

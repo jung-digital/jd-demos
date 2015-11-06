@@ -15,6 +15,13 @@ class DemoBase extends React.Component {
       WIDTH: Const.WIDTH,
       HEIGHT: Const.HEIGHT
     }
+
+    this.canvasContainerClass = 'canvas-container';
+
+    this.loadScript([
+      '/jungle/all/all.min.js',
+      'http://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.3.1/gl-matrix-min.js'
+    ], this.jungleLoadedHandler.bind(this));
   }
 
   resizeHandler(event) {
@@ -43,15 +50,15 @@ class DemoBase extends React.Component {
   }
 
   onMouseOutHandler() {
-    // noop 
+    // noop
   }
 
   onTouchStartHandler() {
-    // noop 
+    // noop
   }
 
   onTouchMoveHandler() {
-    // noop 
+    // noop
   }
 
   getBackButton() {
@@ -64,7 +71,7 @@ class DemoBase extends React.Component {
   }
 
   getCanvasContainer(width, height, canvasID) {
-    return <div className="canvas-container">
+    return <div className={this.canvasContainerClass}>
              <canvas className="demo-canvas" width={width} height={height} style={{width: this.state.canvasTargetWidth, height: this.state.canvasTargetHeight}} id={canvasID}
                 onMouseMove={this.onMouseMoveHandler.bind(this)}
                 onMouseOut={this.onMouseOutHandler.bind(this)}
@@ -73,10 +80,64 @@ class DemoBase extends React.Component {
             </div>;
   }
 
+  getFillCanvasContainer(width, height, canvasID) {
+    return <div className={this.canvasContainerClass}>
+      <canvas width="800" height="491" id={canvasID} style={{width: '100%', height: '100%'}}
+              onMouseMove={this.onMouseMoveHandler.bind(this)}
+              onMouseOut={this.onMouseOutHandler.bind(this)}
+              onTouchStart={this.onTouchStartHandler.bind(this)}
+              onTouchMove={this.onTouchMoveHandler.bind(this)} />
+    </div>;
+  }
+
   componentDidMount() {
     console.log('DemoBase: componentDidMount()');
     window.addEventListener('resize', this.resizeHandler.bind(this));
     this.resizeHandler(null);
+  }
+
+  loadScript(src, callback) {
+    src = Array.isArray(src) ? src : [src];
+
+    let loadCount = 0;
+
+    src.forEach(s => {
+      if (!isLoaded(s)) {
+        var script = document.createElement('script'),
+          loaded;
+        script.setAttribute('src', s);
+        if (callback) {
+          script.onreadystatechange = script.onload = function () {
+            if (!loaded) {
+              finishLoad();
+            }
+            loaded = true;
+          };
+        }
+        document.getElementsByTagName('head')[0].appendChild(script);
+      } else {
+        loadCount++;
+        if (loadCount == src.length) {
+          finishLoad();
+        }
+      }
+    });
+
+    function finishLoad() {
+      loadCount++;
+      if (loadCount == src.length) {
+        callback();
+      }
+    }
+
+    function isLoaded(url) {
+      if (!url) url = "http://xxx.co.uk/xxx/script.js";
+      var scripts = document.getElementsByTagName('script');
+      for (var i = scripts.length; i--;) {
+        if (scripts[i].src == url) return true;
+      }
+      return false;
+    }
   }
 
   onFrame() {
@@ -89,6 +150,10 @@ class DemoBase extends React.Component {
     {
       this.elapsed = (new Date().getTime() - this.lastTime) / 1000;
     }
+  }
+
+  jungleLoadedHandler() {
+    // noop, override me
   }
 }
 

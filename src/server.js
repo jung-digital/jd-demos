@@ -5,6 +5,7 @@ import 'babel/polyfill';
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import serveIndex from 'serve-index';
 import express from 'express';
 import ReactDOM from 'react-dom/server';
 import router from './router';
@@ -12,6 +13,7 @@ import router from './router';
 dotenv.load();
 
 const server = global.server = express();
+const jungleJS = '../../jungle-js/dist';
 
 server.set('port', (process.env.PORT || 5000));
 server.use(express.static(path.join(__dirname, 'public')));
@@ -20,6 +22,12 @@ server.use(express.static(path.join(__dirname, 'public')));
 // Register API middleware
 // -----------------------------------------------------------------------------
 server.use('/api/content', require('./api/content'));
+
+//
+// Expose Jungle JS
+// -----------------------------------------------------------------------------
+server.use("/jungle", express.static(path.join(__dirname, jungleJS)));
+server.use("/jungle", serveIndex(path.join(__dirname, jungleJS)));
 
 //
 // Register server-side rendering middleware
